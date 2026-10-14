@@ -25,10 +25,9 @@
 </script>
 <style>
 :root{--bg:#f5f1ea;--paper:#fffdf8;--ink:#17201d;--soft:#5f6863;--line:#e3ddd1;--accent:#1d5c57;--gold:#b8955a;--deep:#0f2321}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111614;--paper:#181e1c;--ink:#eee9e0;--soft:#a1aaa5;--line:#29312e;--accent:#7cc0b8;--gold:#d4b57c;--deep:#0b1716}}
-:root[data-theme="dark"]{--bg:#111614;--paper:#181e1c;--ink:#eee9e0;--soft:#a1aaa5;--line:#29312e;--accent:#7cc0b8;--gold:#d4b57c;--deep:#0b1716}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
+html{color-scheme:light}
 body{background:var(--bg);color:var(--ink);font:400 17px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{display:block;max-width:100%}
 a{color:inherit}
@@ -36,8 +35,8 @@ em{font-style:italic;color:var(--accent);font-weight:300}
 .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
 .f{font-family:Fraunces,Georgia,serif;font-weight:300;letter-spacing:-.02em}
 .kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
-.proposal{background:var(--deep);color:#e9e3d6;font-size:13px;text-align:center;padding:9px 16px}
-.proposal a{color:var(--gold)}
+.proposal{background:#ece5d8;color:var(--ink);font-size:13px;text-align:center;padding:9px 16px}
+.proposal a{color:var(--accent)}
 header{position:sticky;top:0;z-index:30;transition:background .4s,box-shadow .4s}
 header.solid{background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:74px}
@@ -51,7 +50,6 @@ header.solid{background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-fi
 .btn .ar{transition:transform .25s}.btn:hover .ar{transform:translateX(4px)}
 .btn.ghost{background:transparent;color:var(--ink);border-color:color-mix(in srgb,var(--ink) 25%,transparent)}
 .btn.light{background:#fff;color:var(--deep);border-color:#fff}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn:not(.ghost):not(.light){color:#0c1412}}
 
 /* HERO */
 .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;padding:40px 0 90px;min-height:calc(100vh - 120px)}
@@ -139,18 +137,18 @@ h2{font-family:Fraunces,serif;font-weight:300;font-size:clamp(36px,5vw,64px);lin
 .svc:hover .go{transform:rotate(-45deg);background:#fff;color:var(--deep)}
 
 /* AUDIO */
-.audio{display:grid;grid-template-columns:1fr 1fr;border-radius:32px;overflow:hidden;background:var(--deep);color:#fff}
+.audio{display:grid;grid-template-columns:1fr 1fr;border-radius:32px;overflow:hidden;background:#e7efe9;color:var(--ink)}
 .audio .pic{position:relative;min-height:560px;overflow:hidden}
 .audio .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .audio .txt{padding:72px 64px;display:flex;flex-direction:column;justify-content:center}
-.audio .kicker{color:var(--gold)}
-.audio h2 em{color:var(--gold)}
-.audio p{color:rgba(255,255,255,.75)}
+.audio .kicker{color:var(--accent)}
+.audio h2 em{color:var(--accent)}
+.audio p{color:var(--soft)}
 .steps{list-style:none;padding:0;margin:30px 0 36px;counter-reset:s}
-.steps li{counter-increment:s;padding:14px 0;border-top:1px solid rgba(255,255,255,.14);display:flex;gap:18px;color:rgba(255,255,255,.88)}
+.steps li{counter-increment:s;padding:14px 0;border-top:1px solid rgba(29,92,87,.18);display:flex;gap:18px;color:var(--ink)}
 .steps li::before{content:"0" counter(s);font-family:Fraunces,serif;font-style:italic;color:var(--gold)}
 .wave{display:flex;gap:4px;align-items:center;height:34px;margin-bottom:18px}
-.wave i{width:3px;border-radius:3px;background:var(--gold);animation:wv 1.2s ease-in-out infinite}
+.wave i{width:3px;border-radius:3px;background:var(--accent);animation:wv 1.2s ease-in-out infinite}
 @keyframes wv{0%,100%{height:6px}50%{height:32px}}
 
 /* ABOUT */
@@ -181,7 +179,6 @@ h2{font-family:Fraunces,serif;font-weight:300;font-size:clamp(36px,5vw,64px);lin
 
 /* CTA */
 .cta{margin:0 24px;border-radius:36px;background:var(--accent);color:#fff;text-align:center;padding:120px 24px;position:relative;overflow:hidden}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cta{background:#173f3b}}
 .cta .ring{position:absolute;border:1px solid rgba(255,255,255,.14);border-radius:50%;left:50%;top:50%;translate:-50% -50%;animation:pulse 6s ease-out infinite}
 .cta .ring:nth-child(2){animation-delay:2s}.cta .ring:nth-child(3){animation-delay:4s}
 @keyframes pulse{from{width:120px;height:120px;opacity:1}to{width:1400px;height:1400px;opacity:0}}
@@ -344,7 +341,7 @@ footer ul{list-style:none;padding:0}footer li{margin-bottom:6px}
      <h2>¿Oyes, pero <em>no entiendes</em> bien?</h2>
      <p>Es una de las primeras señales de pérdida auditiva. Te hacemos una valoración completa, sin prisas y explicada.</p>
      <ol class="steps"><li>Videotoscopia: vemos el oído en pantalla, contigo</li><li>Audiometría en cabina insonorizada</li><li>Logoaudiometría y umbral de disconfort</li><li>Audífono a medida y revisiones</li></ol>
-     <div><a class="btn light" href="#cita">Pedir cita de audiología <span class="ar">→</span></a></div>
+     <div><a class="btn" href="#cita">Pedir cita de audiología <span class="ar">→</span></a></div>
     </div>
    </div>
   </div>
