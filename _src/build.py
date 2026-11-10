@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "4"
+VER = "4.7"
 
 def u(p=""):
     return BASE + p
@@ -237,7 +237,7 @@ def home():
   </div>
   <figure>
    <div class="lenses">{lens_img("l1")}<span class="bridge" aria-hidden="true"></span>{lens_img("l2")}</div>
-   <figcaption class="lens-cap">¿Mejor con la primera… o con la segunda?</figcaption>
+   <figcaption class="lens-cap">¿Mejor con <span class="c1">la primera</span>… o con <span class="c2">la segunda</span>?</figcaption>
   </figure>
  </div>
 </section>
@@ -302,7 +302,7 @@ def home():
    <figure class="rv">{pic("etnia", [640, 1200], "Montura de pasta de carey con varillas de colores de Etnia Barcelona", "(max-width:700px) 100vw, 42vw")}</figure>
    <figure class="rv">{pic("monturas-redondas", [640, 1126], "Cuatro gafas de sol redondas de acetato en distintos colores", "(max-width:700px) 100vw, 42vw")}</figure>
   </div>
-  <ul class="brands rv" aria-label="Algunas de nuestras marcas"><li>Varilux</li><li>Etnia Barcelona</li><li>Persol</li><li>Ray-Ban</li></ul>
+  <div class="marquee rv"><ul class="brands" aria-label="Algunas de nuestras marcas"><li>Varilux</li><li>Etnia Barcelona</li><li>Persol</li><li>Ray-Ban</li></ul><ul class="brands" aria-hidden="true"><li>Varilux</li><li>Etnia Barcelona</li><li>Persol</li><li>Ray-Ban</li></ul></div>
   <p style="margin-top:22px" class="rv"><a class="tlink" href="{u('nuestras-marcas/')}">Todas las marcas <span class="arrow">→</span></a></p>
  </div>
 </section>
