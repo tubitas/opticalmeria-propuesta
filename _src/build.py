@@ -161,7 +161,7 @@ def footer():
   <div><h2>Tiendas</h2><ul>{stores}</ul></div>
   <div><h2>La web</h2><ul>{nav}<li><a href="{LIVE}blog/">Blog de Carmen</a></li></ul></div>
   <div><h2>Escríbenos</h2><ul><li><a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></li></ul></div>
-  <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/">Aviso legal</a><a href="{LIVE}politica-de-privacidad/">Privacidad</a><span>Propuesta de rediseño, noviembre de 2026</span></p>
+  <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/">Aviso legal</a><a href="{LIVE}politica-de-privacidad/">Privacidad</a></p>
  </div>
 </footer>
 <nav class="callbar" aria-label="Llamar a una tienda">{calls}</nav>
