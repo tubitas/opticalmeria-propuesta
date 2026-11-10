@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "4.7"
+VER = "5"
 
 def u(p=""):
     return BASE + p
@@ -227,18 +227,19 @@ def home():
     posts_html = "".join(f'<li><a href="{LIVE}{s}/"><time datetime="{d}">{fecha(d)}</time><h3>{t}</h3><span class="arrow" aria-hidden="true">→</span></a></li>' for s, t, d in POSTS[:4])
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in FAQ_HOME)
     body = f'''
-<section class="hero" aria-labelledby="h1">
+<section class="hero5" aria-labelledby="h1">
  <div class="wrap">
-  <div>
-   <p class="lbl">Óptica y audífonos · Albox y Huércal-Overa</p>
+  <div class="h5-copy">
+   <p class="lbl">Albox y Huércal-Overa · desde 1980</p>
    <h1 class="h1" id="h1">Gafas hechas a la medida de tus ojos</h1>
-   <p class="lead">Graduamos tu vista con los aparatos de un centro Varilux especialista, revisamos tu oído en cabina insonorizada y te ayudamos a elegir montura entre primeras marcas. Desde 1980, en el Almanzora.</p>
    <div class="ctas"><a class="btn" href="#cita">Pedir cita</a><a class="btn ghost" href="#tiendas">Ver las tiendas</a></div>
   </div>
-  <figure>
-   <div class="lenses">{lens_img("l1")}<span class="bridge" aria-hidden="true"></span>{lens_img("l2")}</div>
-   <figcaption class="lens-cap">¿Mejor con <span class="c1">la primera</span>… o con <span class="c2">la segunda</span>?</figcaption>
-  </figure>
+  <div class="h5-art">
+   <div class="arch-bg" aria-hidden="true"></div>
+   <figure class="arch"><picture><source type="image/avif" srcset="{u("img/mirada-480.avif")} 480w, {u("img/mirada-760.avif")} 760w" sizes="(max-width:1020px) 60vw, 34vw"><img src="{u("img/mirada-760.webp")}" srcset="{u("img/mirada-480.webp")} 480w, {u("img/mirada-760.webp")} 760w" sizes="(max-width:1020px) 60vw, 34vw" alt="Clienta con gafas de sol octogonales de montura rosa" width="760" height="977" fetchpriority="high"></picture></figure>
+   <figure class="disc"><picture><source type="image/avif" srcset="{u("img/sol-360.avif")} 360w, {u("img/sol-720.avif")} 720w" sizes="(max-width:1020px) 38vw, 22vw"><img src="{u("img/sol-720.webp")}" srcset="{u("img/sol-360.webp")} 360w, {u("img/sol-720.webp")} 720w" sizes="(max-width:1020px) 38vw, 22vw" alt="Chica con gafas graduadas de pasta a contraluz" width="720" height="720"></picture></figure>
+   <div class="seal" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><path id="sealp" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sealp" textLength="474" lengthAdjust="spacing">CENTRO VARILUX ESPECIALISTA · DESDE 2000 · ALBOX · HUÉRCAL-OVERA ·</textPath></text></svg>{LOGO.format(n=9)}</div>
+  </div>
  </div>
 </section>
 {proof}
@@ -344,7 +345,7 @@ def home():
 </section>
 {cita_block()}'''
     ld = [ORG] + [store_ld(s) for s in STORES] + [faq_ld(FAQ_HOME), {"@type": "WebSite", "@id": LIVE + "#web", "url": LIVE, "name": "Óptica Almería", "inLanguage": "es"}]
-    pre = f'<link rel="preload" as="image" href="{u("img/gafas-sol-desierto-1170.avif")}" type="image/avif" fetchpriority="high">'
+    pre = f'<link rel="preload" as="image" href="{u("img/mirada-760.avif")}" imagesrcset="{u("img/mirada-480.avif")} 480w, {u("img/mirada-760.avif")} 760w" imagesizes="(max-width:1020px) 60vw, 34vw" type="image/avif" fetchpriority="high">'
     page("", "Óptica en Albox y Huércal-Overa · Gafas, progresivos y audífonos | Óptica Almería",
          "Ópticos y audioprotesistas en Albox y Huércal-Overa desde 1980. Revisión de la vista, progresivos Varilux, lentillas y audífonos con audiometría en cabina. Pide cita.",
          ld, body, preload=pre)

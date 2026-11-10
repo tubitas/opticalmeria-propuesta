@@ -19,6 +19,12 @@
     var hs=document.querySelectorAll('.fx');
     if('IntersectionObserver' in window){var io3=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io3.unobserve(e.target)}})},{rootMargin:'0px 0px -10% 0px'});hs.forEach(function(h){io3.observe(h)});}
     else hs.forEach(function(h){h.classList.add('on')});}
+
+  // portada v5: las piezas se mueven un poco con el ratón, cada una a su profundidad
+  var art=document.querySelector('.h5-art');
+  if(art&&!calm){var h5=document.querySelector('.hero5');
+    h5.addEventListener('pointermove',function(e){var r=h5.getBoundingClientRect();art.style.setProperty('--mx',((e.clientX-r.left)/r.width-.5).toFixed(3));art.style.setProperty('--my',((e.clientY-r.top)/r.height-.5).toFixed(3))});
+    h5.addEventListener('pointerleave',function(){art.style.setProperty('--mx',0);art.style.setProperty('--my',0)});}
   // héroe: las lentes se turnan, como en el gabinete, y siguen un poco al ratón
   var L=document.querySelector('.lenses'),cap=document.querySelector('.lens-cap');
   if(L&&!calm){var st=1;setTimeout(function(){L.classList.add('loop');var sw=function(){L.dataset.s=st;cap.className='lens-cap s'+st;st=st===1?2:1};sw();setInterval(sw,2600)},3200);
