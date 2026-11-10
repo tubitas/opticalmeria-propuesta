@@ -490,3 +490,8 @@ body{font-size:clamp(18px,.45vw + 13px,21px)}
 .prog{align-items:stretch}
 .prog figure:not(.zones){aspect-ratio:auto;height:100%;min-height:560px}
 @media (max-width:1020px){.prog figure:not(.zones){height:auto;min-height:0;aspect-ratio:4/5}}
+/* tres tonos que se distinguen: cabecera clara, héroe arena tostada, foto naranja */
+.top{background:color-mix(in srgb,#fbf6ee 94%,transparent);border-bottom-color:var(--line)}
+.hero6{background:linear-gradient(165deg,#e4cca8 0%,#d6b78c 100%)}
+.hero6 .lbl{color:#5a4630}
+.hero6 .btn.ghost{border-color:var(--ink)}
