@@ -2,7 +2,7 @@
 /*
 Plugin Name: Óptica Almería · diseño nuevo (v5)
 Description: Sirve la portada y las páginas de servicios y tiendas con el diseño nuevo. El blog, las entradas y el escritorio siguen en WordPress. Para volver a la web anterior basta con desactivar este plugin.
-Version: 5.4.2
+Version: 5.4.3
 Author: Antonio Martínez Rosado
 */
 if (!defined('ABSPATH')) exit;
@@ -18,9 +18,11 @@ function ov5_trozos($html) {
 }
 
 // Google Analytics y Metricool solo cuando el visitante acepta «Analítica» en el aviso de CookieYes.
-// Va aquí y no en WP Headers and Footers porque Wordfence bloquea guardar este código desde ese plugin.
+// Antes iba en el plugin WP Headers and Footers (desactivado el 10/11/2026: Wordfence bloquea guardar ese formulario).
+// La meta de verificación de Search Console también sale de aquí.
 add_action('wp_head', function () {
   if (is_admin()) return;
+  echo "<meta name=\"google-site-verification\" content=\"0YPlPvpoRA9SeORL0uxpqpZ5tDNcMUuYufSjYXVFE6w\" />\n";
   echo "<script id=\"ov5-consent\">/* googletagmanager + metricool tras consentimiento */\n(function(){var cargado=false;function cargar(){if(cargado)return;cargado=true;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-JX418GQGP7';document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config','G-JX418GQGP7');var m=document.createElement('script');m.src='https://tracker.metricool.com/resources/be.js';m.onload=function(){beTracker.t({hash:'d28a629050eeb5d96ad3c05f9355aec4'})};document.head.appendChild(m);}\nfunction mirar(){try{var c=window.getCkyConsent&&getCkyConsent();if(c&&c.categories&&c.categories.analytics)cargar();}catch(e){}}\ndocument.addEventListener('cookieyes_consent_update',function(e){if(e.detail&&e.detail.accepted&&e.detail.accepted.indexOf('analytics')>-1)cargar();});\nif(document.readyState!=='loading')mirar();else document.addEventListener('DOMContentLoaded',mirar);window.addEventListener('load',mirar);})();</script>\n";
 }, 1);
 add_action('template_redirect', function () {
@@ -46,6 +48,7 @@ add_action('template_redirect', function () {
     // aviso de cookies y analítica: los mismos que ya tiene la web, sacados de WordPress
     ob_start(); wp_head(); $cab = ov5_trozos(ob_get_clean());
     ob_start(); wp_footer(); $pie = ov5_trozos(ob_get_clean());
+    $cab = '<meta name="google-site-verification" content="0YPlPvpoRA9SeORL0uxpqpZ5tDNcMUuYufSjYXVFE6w" />' . "\n" . $cab;
     $html = str_replace('</head>', $cab . '</head>', $html);
     $html = str_replace('</body>', $pie . '</body>', $html);
     status_header(200);
