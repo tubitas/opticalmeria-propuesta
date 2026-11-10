@@ -16,7 +16,7 @@ def u(p=""):
 
 STORES = [
     dict(slug="albox", town="Albox", name="Óptica Almería Albox", street="Avenida Puente, 9",
-         cp="04800", tel="950 43 00 12", tel_e164="+34950430012", wpimg="wp-content/uploads/2024/08/ALBOX.jpg", img="tienda-albox", imgw=[640, 1200],
+         cp="04800", tel="950 43 00 12", tel_e164="+34950430012", wpimg="", img="monturas-redondas", imgw=[640, 1126], alt="Gafas de sol redondas de acetato de Óptica Almería",
          maps="https://www.google.com/maps/search/?api=1&query=%C3%93ptica+Almer%C3%ADa+Avenida+Puente+9+Albox",
          embed="https://www.google.com/maps?q=%C3%93ptica+Almer%C3%ADa,+Avenida+Puente+9,+04800+Albox&output=embed",
          geo=(37.3889, -2.1486)),
@@ -68,7 +68,7 @@ ORG = {"@type": "Organization", "@id": LIVE + "#org", "name": "Óptica Almería"
        "department": [{"@id": LIVE + f"opticas/{s['slug']}/#tienda"} for s in STORES]}
 def store_ld(s):
     return {"@type": "Optician", "@id": LIVE + f"opticas/{s['slug']}/#tienda", "name": s["name"],
-            "url": LIVE + f"opticas/{s['slug']}/", "telephone": s["tel_e164"], "image": LIVE + s["wpimg"],
+            "url": LIVE + f"opticas/{s['slug']}/", "telephone": s["tel_e164"], **({"image": LIVE + s["wpimg"]} if s["wpimg"] else {}),
             "parentOrganization": {"@id": LIVE + "#org"}, "priceRange": "€€",
             "address": {"@type": "PostalAddress", "streetAddress": s["street"], "postalCode": s["cp"],
                         "addressLocality": s["town"], "addressRegion": "Almería", "addressCountry": "ES"},
@@ -352,7 +352,7 @@ def home():
 
 def store_card(s, h="h3"):
     return f'''<article class="store rv">
- <figure>{pic(s["img"], s["imgw"], "Fachada de Óptica Almería en " + s["town"], "(max-width:700px) 100vw, 50vw")}</figure>
+ <figure>{pic(s["img"], s["imgw"], s.get("alt") or "Fachada de Óptica Almería en " + s["town"], "(max-width:700px) 100vw, 50vw")}</figure>
  <div class="in">
   <{h} class="h3"><a href="{u("opticas/" + s["slug"] + "/")}" style="text-decoration:none">{s["town"]}</a></{h}>
   <address>{s["street"]}, {s["cp"]} {s["town"]} (Almería)</address>
@@ -512,7 +512,7 @@ def tienda(s):
     other = [x for x in STORES if x is not s][0]
     body = phead(f'<a href="{u("contacto/")}">Tiendas</a> / {s["town"]}', s["town"], f"Óptica Almería en {s['town']}",
                  f"{s['street']}. Revisión de la vista, progresivos Varilux, lentillas y audífonos. Llama al {s['tel']} y te damos hora.",
-                 s["img"], s["imgw"], f"Fachada de Óptica Almería en {s['town']}") + f'''
+                 s["img"], s["imgw"], s.get("alt") or f"Fachada de Óptica Almería en {s['town']}") + f'''
 <section style="padding-top:clamp(24px,3vw,40px)">
  <div class="wrap">
   <dl class="info">
