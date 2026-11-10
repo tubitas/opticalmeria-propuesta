@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "5.4"
+VER = "5.4.2"
 
 def u(p=""):
     return BASE + p
@@ -161,7 +161,7 @@ def footer():
   <div><h2>Tiendas</h2><ul>{stores}</ul></div>
   <div><h2>La web</h2><ul>{nav}<li><a href="{LIVE}blog/">Blog de Carmen</a></li></ul></div>
   <div><h2>Escríbenos</h2><ul><li><a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></li></ul></div>
-  <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/">Aviso legal</a><a href="{LIVE}politica-de-privacidad/">Privacidad</a></p>
+  <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/">Aviso legal</a><a href="{LIVE}politica-de-privacidad/">Privacidad</a><a href="{LIVE}politica-de-cookies/">Cookies</a><button type="button" class="cky-banner-element linkbtn">Configurar cookies</button></p>
  </div>
 </footer>
 <nav class="callbar" aria-label="Llamar a una tienda">{calls}</nav>
@@ -522,7 +522,7 @@ def tienda(s):
    <div><dt>Horario</dt><dd><a href="{s["maps"]}" rel="noopener">Míralo en Google Maps</a></dd></div>
   </dl>
   <div class="ctas" style="margin:32px 0 56px"><a class="btn" href="tel:{s["tel_e164"]}">{PHONE_SVG}Llamar a {s["town"]}</a><a class="btn ghost" href="{s["maps"]}" rel="noopener">{PIN_SVG}Cómo llegar</a></div>
-  <div class="map"><iframe src="{s["embed"]}" title="Mapa de Óptica Almería en {s["town"]}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+  <div class="map" data-src="{s["embed"]}" data-title="Mapa de Óptica Almería en {s["town"]}"><button type="button" class="map-on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Ver el mapa</span><small>Al pulsar se carga Google Maps, que usa sus propias cookies.</small></button></div>
   <div class="prose" style="margin-top:56px">
    <h2>Qué hacemos en esta tienda</h2>
    <ul>

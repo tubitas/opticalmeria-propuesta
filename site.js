@@ -55,3 +55,12 @@
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
   document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
 })();
+
+/* Mapa: solo se carga Google Maps cuando la persona lo pide */
+document.querySelectorAll('.map[data-src]').forEach(function(m){
+  var b=m.querySelector('.map-on'); if(!b)return;
+  b.addEventListener('click',function(){
+    var f=document.createElement('iframe');f.src=m.dataset.src;f.title=m.dataset.title;f.setAttribute('referrerpolicy','no-referrer-when-downgrade');f.setAttribute('allowfullscreen','');
+    m.innerHTML='';m.appendChild(f);f.focus();
+  });
+});

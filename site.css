@@ -495,3 +495,14 @@ body{font-size:clamp(18px,.45vw + 13px,21px)}
 .hero6{background:linear-gradient(165deg,#e4cca8 0%,#d6b78c 100%)}
 .hero6 .lbl{color:#5a4630}
 .hero6 .btn.ghost{border-color:var(--ink)}
+
+/* v5.4.2: mapa al pulsar y enlace de cookies */
+.map{position:relative;display:grid}
+.map-on{all:unset;box-sizing:border-box;cursor:pointer;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;padding:24px;width:100%;height:100%;font:inherit;color:var(--ink)}
+.map-on svg{width:40px;height:40px;fill:none;stroke:var(--carey);stroke-width:1.6}
+.map-on span{font-weight:600;font-size:1.1em;text-decoration:underline;text-underline-offset:4px}
+.map-on small{font-size:.85em;opacity:.75;max-width:32ch}
+.map-on:focus-visible{outline:2px solid var(--carey);outline-offset:-4px}
+.linkbtn{all:unset;cursor:pointer}
+.linkbtn:hover{color:#fff;text-decoration:underline}
+.linkbtn:focus-visible{outline:2px solid currentColor;outline-offset:2px}
