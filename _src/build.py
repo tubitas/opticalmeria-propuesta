@@ -14,6 +14,12 @@ VER = "5.4"
 def u(p=""):
     return BASE + p
 
+ASSETS = os.environ.get("ASSETS", BASE)
+OUT = pathlib.Path(os.environ["OUT"]) if os.environ.get("OUT") else ROOT
+def a(p=""):
+    """Rutas de fotos, letra, CSS y JS (en WordPress viven dentro del plugin)."""
+    return ASSETS + p
+
 STORES = [
     dict(slug="albox", town="Albox", name="Óptica Almería Albox", street="Avenida Puente, 9",
          cp="04800", tel="950 43 00 12", tel_e164="+34950430012", wpimg="", img="monturas-redondas", imgw=[640, 1126], alt="Gafas de sol redondas de acetato de Óptica Almería",
@@ -28,11 +34,12 @@ STORES = [
 ]
 
 POSTS = [
-    ("cansado-ordenador", "¿Cansado del ordenador?", "2024-08-08"),
-    ("palmeras-los-ojos", "Palmeras en los ojos", "2017-03-09"),
-    ("me-enamore-paris", "Me enamoré en París", "2016-12-13"),
-    ("lentes-protectoras", "Lentes protectoras", "2016-12-12"),
-    ("adicta-las-gafas", "Adicta a las gafas", "2016-10-27"),
+    ("senales-perdida-de-audicion", "Señales de que oyes peor de lo que crees", "2026-11-10"),
+    ("gafas-de-sol-que-mirar", "Gafas de sol en Almería: qué mirar antes de comprarlas", "2026-11-10"),
+    ("progresivos-como-acostumbrarse", "Progresivos: cómo acostumbrarse en pocos días", "2026-11-10"),
+    ("cansado-ordenador", "¿Cansado del ordenador? Fatiga visual por pantallas", "2024-08-08"),
+    ("palmeras-los-ojos", "Palmeras en los ojos: qué es el pterigión", "2017-03-09"),
+    ("lentes-protectoras", "Lentes para pantallas y consejos para no cansar la vista", "2016-12-12"),
     ("7-consejos-cuidar-tus-lentes-contacto", "7 consejos para cuidar tus lentes de contacto", "2016-10-27"),
 ]
 MESES = "enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre".split()
@@ -51,15 +58,15 @@ LOGO = ('<svg viewBox="0 0 66 28" aria-hidden="true"><defs><linearGradient id="l
         '<path d="M63 2.4v23.2" stroke="url(#lg{n})" stroke-width="1.7"/></svg>')
 
 def pic(name, widths, alt, sizes="100vw", cls="", eager=False, w=None, h=None):
-    av = ", ".join(f"{u('img/')}{name}-{x}.avif {x}w" for x in widths)
-    wb = ", ".join(f"{u('img/')}{name}-{x}.webp {x}w" for x in widths)
+    av = ", ".join(f"{a('img/')}{name}-{x}.avif {x}w" for x in widths)
+    wb = ", ".join(f"{a('img/')}{name}-{x}.webp {x}w" for x in widths)
     big = widths[-1]
     load = 'fetchpriority="high"' if eager else 'loading="lazy" decoding="async"'
     dims = f' width="{w}" height="{h}"' if w else ""
     c = f' class="{cls}"' if cls else ""
     return (f'<picture><source type="image/avif" srcset="{av}" sizes="{sizes}">'
             f'<source type="image/webp" srcset="{wb}" sizes="{sizes}">'
-            f'<img src="{u("img/")}{name}-{big}.webp"{c} alt="{html.escape(alt)}"{dims} {load}></picture>')
+            f'<img src="{a("img/")}{name}-{big}.webp"{c} alt="{html.escape(alt)}"{dims} {load}></picture>')
 
 # ---------- datos estructurados ----------
 ORG = {"@type": "Organization", "@id": LIVE + "#org", "name": "Óptica Almería", "url": LIVE,
@@ -94,7 +101,7 @@ def head(title, desc, path, ld, preload=""):
 <title>{html.escape(title)}</title>
 <meta name="description" content="{html.escape(desc)}">
 {robots}
-<link rel="canonical" href="{LIVE}{path}">
+<link rel="canonical" href="{LIVE}{path}{"/" if path else ""}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="Óptica Almería">
@@ -103,9 +110,9 @@ def head(title, desc, path, ld, preload=""):
 <meta property="og:image" content="{LIVE}wp-content/uploads/2024/06/optica-almeria.jpg">
 <meta name="theme-color" content="#f5f0e8">
 <link rel="icon" href="{LIVE}wp-content/uploads/2024/08/cropped-icono.png">
-<link rel="preload" href="{u('fonts/jost.woff2')}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{a('fonts/jost.woff2')}" as="font" type="font/woff2" crossorigin>
 {preload}
-<link rel="stylesheet" href="{u('site.css')}?v={VER}">
+<link rel="stylesheet" href="{a('site.css')}?v={VER}">
 <script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": ld}, ensure_ascii=False)}</script>
 </head>
 <body>
@@ -158,16 +165,16 @@ def footer():
  </div>
 </footer>
 <nav class="callbar" aria-label="Llamar a una tienda">{calls}</nav>
-<script src="{u('site.js')}?v={VER}" defer></script>
+<script src="{a('site.js')}?v={VER}" defer></script>
 </body>
 </html>
 '''
 
 def page(path, title, desc, ld, body, cur="", preload=""):
-    out = ROOT / path / "index.html" if path else ROOT / "index.html"
+    out = OUT / path / "index.html" if path else OUT / "index.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(head(title, desc, path, ld, preload) + header(cur) + body + footer(), encoding="utf-8")
-    print("ok", out.relative_to(ROOT))
+    print("ok", out.relative_to(OUT))
 
 def phead(crumb, lbl, h1, lead, img=None, imgw=None, alt=""):
     fig = f'<figure>{pic(img, imgw, alt, "(max-width:1020px) 100vw, 45vw", eager=True)}</figure>' if img else ""
@@ -198,10 +205,10 @@ FAQ_HOME = [
 ]
 
 def home():
-    lens_img = lambda cls: (f'<div class="lens {cls}"><picture><source type="image/avif" srcset="{u("img/gafas-sol-desierto-1170.avif")}">'
-                            f'<img src="{u("img/gafas-sol-desierto-1170.webp")}" alt="" width="1170" height="666" fetchpriority="high"></picture></div>')
+    lens_img = lambda cls: (f'<div class="lens {cls}"><picture><source type="image/avif" srcset="{a("img/gafas-sol-desierto-1170.avif")}">'
+                            f'<img src="{a("img/gafas-sol-desierto-1170.webp")}" alt="" width="1170" height="666" fetchpriority="high"></picture></div>')
     proof = '''<div class="proof"><ul class="wrap">
-  <li><svg class="pi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4.5l3.4 7 7.6 1.1-5.5 5.4 1.3 7.6L16 22l-6.8 3.6 1.3-7.6L5 12.6l7.6-1.1z"/></svg><b>4,9</b><span>de nota media en Google</span></li>
+  <li><svg class="pi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4.5l3.4 7 7.6 1.1-5.5 5.4 1.3 7.6L16 22l-6.8 3.6 1.3-7.6L5 12.6l7.6-1.1z"/></svg><b>4,9</b><span>de nota en Google, con 38 opiniones (Albox)</span></li>
   <li><svg class="pi" viewBox="0 0 32 32" aria-hidden="true"><circle cx="10" cy="17" r="6"/><circle cx="22" cy="17" r="6"/><path d="M4 17l-1.5-5M28 17l1.5-5"/></svg><b>2000</b><span>centro Varilux especialista desde ese año</span></li>
   <li><svg class="pi" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 13v14h22V13M3.5 8.5L6 4h20l2.5 4.5v1.8a3.6 3.6 0 0 1-6.25 2.4 3.6 3.6 0 0 1-6.25 0 3.6 3.6 0 0 1-6.25 0A3.6 3.6 0 0 1 3.5 10.3z"/><path d="M13 27v-7h6v7"/></svg><b>1980</b><span>abrimos la primera tienda en Albox</span></li>
   <li><svg class="pi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 28s9-8.2 9-15a9 9 0 0 0-18 0c0 6.8 9 15 9 15z"/><circle cx="16" cy="13" r="3.2"/></svg><b>2</b><span>tiendas, en Albox y Huércal-Overa</span></li>
@@ -233,7 +240,7 @@ def home():
   <h1 class="h1" id="h1">Gafas hechas a la medida de tus ojos</h1>
   <div class="ctas"><a class="btn" href="#cita">Pedir cita</a><a class="btn ghost" href="#tiendas">Ver las tiendas</a></div>
  </div>
- <figure class="h6-photo"><picture><source type="image/avif" srcset="{u("img/tabernas-800.avif")} 800w, {u("img/tabernas-1200.avif")} 1200w, {u("img/tabernas-1600.avif")} 1600w" sizes="(max-width:1020px) 100vw, 50vw"><img src="{u("img/tabernas-1200.webp")}" srcset="{u("img/tabernas-800.webp")} 800w, {u("img/tabernas-1200.webp")} 1200w, {u("img/tabernas-1600.webp")} 1600w" sizes="(max-width:1020px) 100vw, 50vw" alt="Mujer con gafas de pasta de carey en el desierto de Tabernas al atardecer" width="1600" height="1986" fetchpriority="high"></picture></figure>
+ <figure class="h6-photo"><picture><source type="image/avif" srcset="{a("img/tabernas-800.avif")} 800w, {a("img/tabernas-1200.avif")} 1200w, {a("img/tabernas-1600.avif")} 1600w" sizes="(max-width:1020px) 100vw, 50vw"><img src="{a("img/tabernas-1200.webp")}" srcset="{a("img/tabernas-800.webp")} 800w, {a("img/tabernas-1200.webp")} 1200w, {a("img/tabernas-1600.webp")} 1600w" sizes="(max-width:1020px) 100vw, 50vw" alt="Mujer con gafas de pasta de carey en el desierto de Tabernas al atardecer" width="1600" height="1986" fetchpriority="high"></picture></figure>
  <div class="seal" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><path id="sealp" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sealp" textLength="474" lengthAdjust="spacing">CENTRO VARILUX ESPECIALISTA · DESDE 2000 · ALBOX · HUÉRCAL-OVERA ·</textPath></text></svg>{LOGO.format(n=9)}</div>
 </section>
 {proof}
@@ -339,7 +346,7 @@ def home():
 </section>
 {cita_block()}'''
     ld = [ORG] + [store_ld(s) for s in STORES] + [faq_ld(FAQ_HOME), {"@type": "WebSite", "@id": LIVE + "#web", "url": LIVE, "name": "Óptica Almería", "inLanguage": "es"}]
-    pre = f'<link rel="preload" as="image" href="{u("img/tabernas-1200.avif")}" imagesrcset="{u("img/tabernas-800.avif")} 800w, {u("img/tabernas-1200.avif")} 1200w, {u("img/tabernas-1600.avif")} 1600w" imagesizes="(max-width:1020px) 100vw, 50vw" type="image/avif" fetchpriority="high">'
+    pre = f'<link rel="preload" as="image" href="{a("img/tabernas-1200.avif")}" imagesrcset="{a("img/tabernas-800.avif")} 800w, {a("img/tabernas-1200.avif")} 1200w, {a("img/tabernas-1600.avif")} 1600w" imagesizes="(max-width:1020px) 100vw, 50vw" type="image/avif" fetchpriority="high">'
     page("", "Óptica en Albox y Huércal-Overa · Gafas, progresivos y audífonos | Óptica Almería",
          "Ópticos y audioprotesistas en Albox y Huércal-Overa desde 1980. Revisión de la vista, progresivos Varilux, lentillas y audífonos con audiometría en cabina. Pide cita.",
          ld, body, preload=pre)
@@ -537,5 +544,5 @@ def tienda(s):
 if __name__ == "__main__":
     home(); salud_visual(); salud_auditiva(); marcas(); nosotros(); contacto()
     for s in STORES: tienda(s)
-    (ROOT / "robots.txt").write_text("User-agent: *\nDisallow: /\n" if NOINDEX else f"User-agent: *\nAllow: /\nSitemap: {LIVE}sitemap.xml\n")
-    (ROOT / ".nojekyll").write_text("")
+    (OUT / "robots.txt").write_text("User-agent: *\nDisallow: /\n" if NOINDEX else f"User-agent: *\nAllow: /\nSitemap: {LIVE}sitemap.xml\n")
+    (OUT / ".nojekyll").write_text("")
