@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "5"
+VER = "5.1"
 
 def u(p=""):
     return BASE + p
@@ -227,20 +227,14 @@ def home():
     posts_html = "".join(f'<li><a href="{LIVE}{s}/"><time datetime="{d}">{fecha(d)}</time><h3>{t}</h3><span class="arrow" aria-hidden="true">→</span></a></li>' for s, t, d in POSTS[:4])
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in FAQ_HOME)
     body = f'''
-<section class="hero5" aria-labelledby="h1">
- <div class="wrap">
-  <div class="h5-copy">
-   <p class="lbl">Albox y Huércal-Overa · desde 1980</p>
-   <h1 class="h1" id="h1">Gafas hechas a la medida de tus ojos</h1>
-   <div class="ctas"><a class="btn" href="#cita">Pedir cita</a><a class="btn ghost" href="#tiendas">Ver las tiendas</a></div>
-  </div>
-  <div class="h5-art">
-   <div class="arch-bg" aria-hidden="true"></div>
-   <figure class="arch"><picture><source type="image/avif" srcset="{u("img/mirada-480.avif")} 480w, {u("img/mirada-760.avif")} 760w" sizes="(max-width:1020px) 60vw, 34vw"><img src="{u("img/mirada-760.webp")}" srcset="{u("img/mirada-480.webp")} 480w, {u("img/mirada-760.webp")} 760w" sizes="(max-width:1020px) 60vw, 34vw" alt="Clienta con gafas de sol octogonales de montura rosa" width="760" height="977" fetchpriority="high"></picture></figure>
-   <figure class="disc"><picture><source type="image/avif" srcset="{u("img/sol-360.avif")} 360w, {u("img/sol-720.avif")} 720w" sizes="(max-width:1020px) 38vw, 22vw"><img src="{u("img/sol-720.webp")}" srcset="{u("img/sol-360.webp")} 360w, {u("img/sol-720.webp")} 720w" sizes="(max-width:1020px) 38vw, 22vw" alt="Chica con gafas graduadas de pasta a contraluz" width="720" height="720"></picture></figure>
-   <div class="seal" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><path id="sealp" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sealp" textLength="474" lengthAdjust="spacing">CENTRO VARILUX ESPECIALISTA · DESDE 2000 · ALBOX · HUÉRCAL-OVERA ·</textPath></text></svg>{LOGO.format(n=9)}</div>
-  </div>
+<section class="hero6" aria-labelledby="h1">
+ <div class="h6-copy">
+  <p class="lbl">Albox y Huércal-Overa · desde 1980</p>
+  <h1 class="h1" id="h1">Gafas hechas a la medida de tus ojos</h1>
+  <div class="ctas"><a class="btn" href="#cita">Pedir cita</a><a class="btn ghost" href="#tiendas">Ver las tiendas</a></div>
  </div>
+ <figure class="h6-photo"><picture><source type="image/avif" srcset="{u("img/tabernas-800.avif")} 800w, {u("img/tabernas-1200.avif")} 1200w, {u("img/tabernas-1600.avif")} 1600w" sizes="(max-width:1020px) 100vw, 50vw"><img src="{u("img/tabernas-1200.webp")}" srcset="{u("img/tabernas-800.webp")} 800w, {u("img/tabernas-1200.webp")} 1200w, {u("img/tabernas-1600.webp")} 1600w" sizes="(max-width:1020px) 100vw, 50vw" alt="Mujer con gafas de pasta de carey en el desierto de Tabernas al atardecer" width="1600" height="1986" fetchpriority="high"></picture></figure>
+ <div class="seal" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><path id="sealp" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs><text><textPath href="#sealp" textLength="474" lengthAdjust="spacing">CENTRO VARILUX ESPECIALISTA · DESDE 2000 · ALBOX · HUÉRCAL-OVERA ·</textPath></text></svg>{LOGO.format(n=9)}</div>
 </section>
 {proof}
 
@@ -262,7 +256,7 @@ def home():
 
 <section class="band" aria-labelledby="prog-t">
  <div class="wrap prog">
-  <figure class="rv">{pic("progresivos", [640, 1230], "Clienta de Óptica Almería ajustándose unas gafas de pasta de carey", "(max-width:1020px) 100vw, 55vw")}</figure>
+  <figure class="rv">{pic("pareja", [640, 1230], "Pareja de unos cincuenta años con gafas de pasta, a la luz de la tarde", "(max-width:1020px) 100vw, 55vw")}</figure>
   <div>
    <p class="lbl rv">Progresivos</p>
    <h2 class="h2 rv" id="prog-t">Ver de lejos, de media distancia y de cerca con las mismas gafas</h2>
@@ -345,7 +339,7 @@ def home():
 </section>
 {cita_block()}'''
     ld = [ORG] + [store_ld(s) for s in STORES] + [faq_ld(FAQ_HOME), {"@type": "WebSite", "@id": LIVE + "#web", "url": LIVE, "name": "Óptica Almería", "inLanguage": "es"}]
-    pre = f'<link rel="preload" as="image" href="{u("img/mirada-760.avif")}" imagesrcset="{u("img/mirada-480.avif")} 480w, {u("img/mirada-760.avif")} 760w" imagesizes="(max-width:1020px) 60vw, 34vw" type="image/avif" fetchpriority="high">'
+    pre = f'<link rel="preload" as="image" href="{u("img/tabernas-1200.avif")}" imagesrcset="{u("img/tabernas-800.avif")} 800w, {u("img/tabernas-1200.avif")} 1200w, {u("img/tabernas-1600.avif")} 1600w" imagesizes="(max-width:1020px) 100vw, 50vw" type="image/avif" fetchpriority="high">'
     page("", "Óptica en Albox y Huércal-Overa · Gafas, progresivos y audífonos | Óptica Almería",
          "Ópticos y audioprotesistas en Albox y Huércal-Overa desde 1980. Revisión de la vista, progresivos Varilux, lentillas y audífonos con audiometría en cabina. Pide cita.",
          ld, body, preload=pre)
