@@ -486,3 +486,7 @@ body{font-size:clamp(18px,.45vw + 13px,21px)}
 .proof b{font-size:clamp(44px,4.6vw,72px);font-weight:300;line-height:1;letter-spacing:-.03em}
 .proof span{font-size:clamp(15.5px,1.1vw,18px);color:var(--ink2);max-width:15em}
 @media (max-width:1020px){.proof li:nth-child(n+3){border-top:1px solid #cdb999}}
+/* progresivos: la foto llega hasta abajo, sin hueco al lado del 2000 */
+.prog{align-items:stretch}
+.prog figure:not(.zones){aspect-ratio:auto;height:100%;min-height:560px}
+@media (max-width:1020px){.prog figure:not(.zones){height:auto;min-height:0;aspect-ratio:4/5}}
