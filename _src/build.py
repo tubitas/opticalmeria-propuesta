@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "5.1"
+VER = "5.2"
 
 def u(p=""):
     return BASE + p
@@ -201,10 +201,10 @@ def home():
     lens_img = lambda cls: (f'<div class="lens {cls}"><picture><source type="image/avif" srcset="{u("img/gafas-sol-desierto-1170.avif")}">'
                             f'<img src="{u("img/gafas-sol-desierto-1170.webp")}" alt="" width="1170" height="666" fetchpriority="high"></picture></div>')
     proof = '''<div class="proof"><ul class="wrap">
-  <li><b>4,9</b><span>de nota media en Google</span></li>
-  <li><b>2000</b><span>centro Varilux especialista desde ese año</span></li>
-  <li><b>1980</b><span>abrimos la primera tienda en Albox</span></li>
-  <li><b>2</b><span>tiendas, en Albox y Huércal-Overa</span></li>
+  <li><svg class="pi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4.5l3.4 7 7.6 1.1-5.5 5.4 1.3 7.6L16 22l-6.8 3.6 1.3-7.6L5 12.6l7.6-1.1z"/></svg><b>4,9</b><span>de nota media en Google</span></li>
+  <li><svg class="pi" viewBox="0 0 32 32" aria-hidden="true"><circle cx="10" cy="17" r="6"/><circle cx="22" cy="17" r="6"/><path d="M4 17l-1.5-5M28 17l1.5-5"/></svg><b>2000</b><span>centro Varilux especialista desde ese año</span></li>
+  <li><svg class="pi" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 13v14h22V13M3.5 8.5L6 4h20l2.5 4.5v1.8a3.6 3.6 0 0 1-6.25 2.4 3.6 3.6 0 0 1-6.25 0 3.6 3.6 0 0 1-6.25 0A3.6 3.6 0 0 1 3.5 10.3z"/><path d="M13 27v-7h6v7"/></svg><b>1980</b><span>abrimos la primera tienda en Albox</span></li>
+  <li><svg class="pi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 28s9-8.2 9-15a9 9 0 0 0-18 0c0 6.8 9 15 9 15z"/><circle cx="16" cy="13" r="3.2"/></svg><b>2</b><span>tiendas, en Albox y Huércal-Overa</span></li>
  </ul></div>'''
     svcs = [
         ("Graduación de la vista", "Medimos tu agudeza visual de lejos y de cerca y comprobamos cómo trabajan los dos ojos juntos."),
