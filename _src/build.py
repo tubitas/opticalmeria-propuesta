@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "3"
+VER = "4.4"
 
 def u(p=""):
     return BASE + p
@@ -280,7 +280,7 @@ def home():
  <div class="wrap">
   <div class="sec-head"><div><h2 class="h2 rv" id="mar-t">Monturas que se eligen con calma, y con espejo</h2></div>
   <p class="lead rv">Trabajamos solo con primeras marcas, de las más clásicas a las más atrevidas. Ven a probártelas: te decimos con sinceridad cuál te favorece y cuál no.</p></div>
-  <div class="frames">
+  <div class="gallery">
    <figure class="f1 rv">{pic("gafas-sol-desierto", [640, 1170], "Dos chicas con gafas de sol entre rocas del desierto de Almería", "(max-width:700px) 100vw, 56vw")}</figure>
    <figure class="rv">{pic("etnia", [640, 1200], "Montura de pasta de carey con varillas de colores de Etnia Barcelona", "(max-width:700px) 100vw, 42vw")}</figure>
    <figure class="rv">{pic("monturas-redondas", [640, 1126], "Cuatro gafas de sol redondas de acetato en distintos colores", "(max-width:700px) 100vw, 42vw")}</figure>
@@ -435,7 +435,7 @@ def marcas():
                  "etnia", [640, 1200], "Montura de carey con varillas de colores de Etnia Barcelona") + f'''
 <section style="padding-top:clamp(40px,5vw,72px)">
  <div class="wrap">
-  <div class="frames">
+  <div class="gallery">
    <figure class="f1 rv">{pic("gafas-sol-desierto", [640, 1170], "Dos chicas con gafas de sol entre rocas del desierto de Almería", "(max-width:700px) 100vw, 56vw")}</figure>
    <figure class="rv">{pic("persol", [640, 945], "Campaña Reflex Edition de Persol en blanco y negro", "(max-width:700px) 100vw, 42vw")}</figure>
    <figure class="rv">{pic("monturas-redondas", [640, 1126], "Cuatro gafas de sol redondas de acetato", "(max-width:700px) 100vw, 42vw")}</figure>
@@ -522,6 +522,254 @@ def tienda(s):
     page(f"opticas/{s['slug']}", f"Óptica en {s['town']}, {s['street']} | Óptica Almería",
          f"Óptica Almería en {s['street']}, {s['town']}. Revisión de la vista, progresivos Varilux, lentillas y audífonos. Teléfono {s['tel']}.",
          [ORG, store_ld(s), crumbs_ld([("", "Inicio"), ("contacto/", "Tiendas"), (f"opticas/{s['slug']}/", s["town"])])], body, cur="contacto/")
+
+
+# =====================  v4 · noche del desierto  =====================
+MENU_DEC = ["0,1", "0,2", "0,4", "0,6", "0,8", "1,0"]
+
+def header(cur):
+    items = [("", "Inicio")] + NAV
+    lis = "".join(f'<li><a href="{u(p)}"{" aria-current=page" if p == cur else ""}>{t}</a><small>{d}</small></li>' for (p, t), d in zip(items, MENU_DEC))
+    tels = "".join(f'<a class="btn{" ghost" if i else ""}" href="tel:{s["tel_e164"]}">{PHONE_SVG}Llamar a {s["town"]}</a>' for i, s in enumerate(STORES))
+    return f"""<header class="top" id="top">
+ <div class="wrap nav">
+  <a class="logo" href="{u()}" aria-label="Óptica Almería, inicio">{LOGO.format(n=1)}<span>Óptica Almería</span></a>
+  <div class="nav-r">
+   <a class="btn" href="{u('contacto/')}#cita">Pedir cita</a>
+   <details class="chartmenu"><summary><i aria-hidden="true"></i><span class="mo">Menú</span><span class="mc">Cerrar</span></summary>
+    <nav class="panel" aria-label="Principal"><ol>{lis}</ol><div class="tels">{tels}</div></nav>
+   </details>
+  </div>
+ </div>
+</header>
+<main id="main">
+"""
+
+def cita_block():
+    phones = "".join(f'<a href="tel:{s["tel_e164"]}"><span>{s["town"]}</span><b>{s["tel"]}</b></a>' for s in STORES)
+    return f"""<section class="cita" id="cita" aria-labelledby="cita-t">
+ <div class="wrap">
+  <h2 class="h2 rv" id="cita-t">Llama a la tienda que te pille más cerca</h2>
+  <p class="lead rv">Te damos hora para la revisión de la vista o del oído. Si no sabes qué necesitas, cuéntanoslo por teléfono y te orientamos.</p>
+ </div>
+ <div class="phones rv">{phones}</div>
+ <p class="mail">O escríbenos a <a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></p>
+</section>
+"""
+
+def footer():
+    stores = "".join(f'<li><a href="{u("opticas/" + s["slug"] + "/")}">{s["town"]}</a> · <a href="tel:{s["tel_e164"]}">{s["tel"]}</a></li>' for s in STORES)
+    nav = "".join(f'<li><a href="{u(p)}">{t}</a></li>' for p, t in NAV)
+    calls = "".join(f'<a class="btn{" ghost" if i else ""}" href="tel:{s["tel_e164"]}">{PHONE_SVG}{s["town"]}</a>' for i, s in enumerate(STORES))
+    return f"""</main>
+<footer class="foot">
+ <div class="wrap">
+  <p class="big" aria-hidden="true">Óptica Almería</p>
+  <div class="cols">
+   <div><p>Ópticos y audioprotesistas en Albox y Huércal-Overa desde 1980. Centro Varilux especialista desde 2000.</p></div>
+   <div><h2>Tiendas</h2><ul>{stores}</ul></div>
+   <div><h2>La web</h2><ul>{nav}<li><a href="{LIVE}blog/">Blog de Carmen</a></li></ul></div>
+   <div><h2>Escríbenos</h2><ul><li><a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></li></ul></div>
+  </div>
+  <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/">Aviso legal</a><a href="{LIVE}politica-de-privacidad/">Privacidad</a><span>Propuesta de rediseño, noviembre de 2026 · <a href="{u('v3/')}">ver la versión clara</a></span></p>
+ </div>
+</footer>
+<nav class="callbar" aria-label="Llamar a una tienda">{calls}</nav>
+<script src="{u('site.js')}?v={VER}" defer></script>
+</body>
+</html>
+"""
+
+_page_v3 = page
+def page(path, title, desc, ld, body, cur="", preload=""):
+    out = ROOT / path / "index.html" if path else ROOT / "index.html"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    h = head(title, desc, path, ld, preload)
+    if not path:
+        h = h.replace("<body>", '<body class="home">', 1)
+    h = h.replace('content="#f5f0e8"', 'content="#0e0d0c"')
+    out.write_text(h + header(cur) + body + footer(), encoding="utf-8")
+    print("ok", out.relative_to(ROOT))
+
+def duo_block(h="h3"):
+    arts = ""
+    for s in STORES:
+        arts += f"""<article class="rv">
+  <div class="ph">{pic(s["img"], s["imgw"], "Fachada de Óptica Almería en " + s["town"], "(max-width:700px) 100vw, 50vw")}</div>
+  <{h} class="sr">Óptica Almería en {s["town"]}</{h}>
+  <a class="town" href="{u("opticas/" + s["slug"] + "/")}" aria-hidden="true" tabindex="-1">{s["town"]}</a>
+  <address>{s["street"]}, {s["cp"]} {s["town"]} (Almería)</address>
+  <a class="tel" href="tel:{s["tel_e164"]}">{s["tel"]}</a>
+  <p class="hours">Horario: <a href="{s["maps"]}" rel="noopener">míralo en Google Maps</a></p>
+  <div class="acts"><a class="btn" href="tel:{s["tel_e164"]}">{PHONE_SVG}Llamar</a><a class="btn ghost" href="{s["maps"]}" rel="noopener">{PIN_SVG}Cómo llegar</a><a class="btn ghost" href="{u("opticas/" + s["slug"] + "/")}">La tienda</a></div>
+ </article>"""
+    return f'<div class="duo">{arts}</div>'
+
+LENS_SVG = """<svg viewBox="0 0 520 600" role="img" aria-labelledby="lf-t">
+ <title id="lf-t">Una clienta con gafas de pasta vista a través de una lente progresiva, con sus tres zonas</title>
+ <defs><clipPath id="lf"><path d="M70 40 H450 Q500 40 500 100 V430 Q500 560 330 570 H190 Q20 560 20 430 V100 Q20 40 70 40Z"/></clipPath></defs>
+ <image href="{img}" x="-170" y="-10" width="1110" height="632" preserveAspectRatio="xMidYMid slice" clip-path="url(#lf)"/>
+ <path d="M70 40 H450 Q500 40 500 100 V430 Q500 560 330 570 H190 Q20 560 20 430 V100 Q20 40 70 40Z" fill="none" stroke="#efe7da" stroke-width="1.5"/>
+ <path d="M20 250 Q260 300 500 250" fill="none" stroke="#efe7da" stroke-opacity=".55" stroke-width="1" stroke-dasharray="4 6"/>
+ <path d="M60 420 Q260 380 460 420" fill="none" stroke="#efe7da" stroke-opacity=".55" stroke-width="1" stroke-dasharray="4 6"/>
+</svg>"""
+
+def home():
+    hero_src = (f'<source type="image/avif" srcset="{u("img/gafas-sol-desierto-1170.avif")}">'
+                f'<img src="{u("img/gafas-sol-desierto-1170.webp")}" alt="" width="1170" height="666" fetchpriority="high">')
+    svcs = [
+        ("Graduación", "Agudeza visual de lejos y de cerca, y cómo trabajan los dos ojos juntos."),
+        ("Retinografía", "Una foto del fondo del ojo para vigilar la retina de un año a otro."),
+        ("Lentillas", "Te las adaptamos y te enseñamos a ponértelas y a cuidarlas."),
+        ("Orto-K", "Lentes que se llevan al dormir y corrigen la miopía durante el día."),
+        ("Baja visión", "Lupas, filtros y telescopios para quien ya no ve bien con gafas."),
+    ]
+    svc_html = "".join(f"<li><h3>{a}</h3><p>{b}</p></li>" for a, b in svcs)
+    tests = [
+        ("Videotoscopia", "Miramos el conducto y el tímpano con una cámara conectada a una pantalla, y tú lo ves con nosotros."),
+        ("Audiometría tonal", "En cabina insonorizada escuchas tonos a distintas intensidades para saber dónde empieza tu audición."),
+        ("Logoaudiometría", "La misma prueba con palabras: así sabemos cuánto entiendes de lo que oyes."),
+        ("Umbral de molestia", "A qué volumen te empiezan a molestar los sonidos, para que el audífono nunca llegue ahí."),
+    ]
+    tests_html = "".join(f"<li class='rv'><h3>{a}</h3><p>{b}</p></li>" for a, b in tests)
+    reel = [
+        ("gafas-sol-desierto", [640, 1170], "wide", "Dos clientas con gafas de sol entre las rocas", "<b>Gafas de sol</b>, entre las rocas del desierto"),
+        ("etnia", [640, 1200], "", "Montura de carey con varillas de colores de Etnia Barcelona", "<b>Etnia Barcelona</b>, color en las varillas"),
+        ("monturas-redondas", [640, 1126], "", "Cuatro gafas de sol redondas de acetato", "<b>Redondas</b>, de acetato"),
+        ("persol", [640, 945], "wide", "Campaña Reflex Edition de Persol en blanco y negro", "<b>Persol</b>, Reflex Edition"),
+        ("progresivos", [640, 1230], "", "Clienta ajustándose unas gafas de pasta de carey", "<b>Pasta de carey</b>, graduadas"),
+    ]
+    reel_html = "".join(f'<figure class="{c}"><div class="ph">{pic(n, w, alt, "(max-width:700px) 80vw, 560px")}</div><figcaption>{cap}</figcaption></figure>' for n, w, c, alt, cap in reel)
+    posts_html = "".join(f'<li><a href="{LIVE}{s}/"><time datetime="{d}">{fecha(d)}</time><h3>{t}</h3><span class="arrow" aria-hidden="true">→</span></a></li>' for s, t, d in POSTS[:4])
+    faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in FAQ_HOME)
+    body = f"""
+<section class="lens-hero" aria-labelledby="h1" style="padding:0">
+ <div class="stage">
+  <div class="layer blurry"><picture>{hero_src}</picture></div>
+  <div class="shade"></div>
+  <div class="layer sharp" aria-hidden="true"><picture>{hero_src}</picture></div>
+  <div class="ring" aria-hidden="true"></div>
+ </div>
+ <div class="copy">
+  <div class="wrap">
+   <div>
+    <p class="lbl">Óptica y audífonos · Albox y Huércal-Overa</p>
+    <h1 id="h1"><span class="fuzzy">Sin gafas,</span><span class="crisp">con las nuestras.</span></h1>
+   </div>
+   <div class="side">
+    <p>Graduamos tu vista y tu oído en el Almanzora desde 1980. La foto es lo que ves sin graduar. El círculo, lo que ves con nosotros.</p>
+    <div class="ctas"><a class="btn" href="#cita">Pedir cita</a><a class="btn ghost" href="#tiendas">Las tiendas</a></div>
+    <p class="hint" aria-hidden="true">Pasa el dedo o el ratón por la foto.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="grad" aria-labelledby="grad-t">
+ <div class="wrap">
+  <div class="head">
+   <h2 class="h2 rv" id="grad-t">Gradúate tú</h2>
+   <p class="lead rv">Mueve el dial hasta que la frase se lea bien. En el gabinete hacemos lo mismo, lente a lente, pero con aparatos.</p>
+  </div>
+  <p class="statement" id="frase">Una revisión al año, aunque veas bien. Lo recomienda la Organización Mundial de la Salud.</p>
+  <div class="dial">
+   <output id="dio-out" for="dioptrias" aria-live="off">−2,75</output>
+   <div><label for="dioptrias">Tu graduación, en dioptrías</label><input type="range" id="dioptrias" min="-4" max="0" step="0.25" value="-2.75" aria-describedby="frase"></div>
+   <button class="btn" type="button" id="enfocar">Enfocar</button>
+  </div>
+  <p class="done" aria-live="polite"></p>
+  <ul class="svc rv">{svc_html}</ul>
+  <p style="margin-top:36px" class="rv"><a class="tlink" href="{u('tu-salud-visual/')}">Miopía, astigmatismo, cataratas: qué es cada cosa <span class="arrow">→</span></a></p>
+ </div>
+</section>
+
+<section aria-labelledby="prog-t" style="padding-top:0">
+ <div class="wrap prog">
+  <div class="lensframe rv">{LENS_SVG.format(img=u("img/progresivos-1230.webp"))}<div class="zones" aria-hidden="true"><span>Lejos</span><span>Intermedia</span><span>Cerca</span></div></div>
+  <div>
+   <p class="lbl rv">Progresivos Varilux</p>
+   <h2 class="h2 rv" id="prog-t">Tres distancias en una sola lente</h2>
+   <p class="lead rv">Lejos arriba, el ordenador en medio y el libro abajo. Unos progresivos solo funcionan si se miden bien: la altura de cada pupila, la distancia entre los ojos y cómo te queda la montura en la cara. Por eso Essilor nos nombró centro Varilux especialista, y por eso esas medidas las tomamos con aparatos de precisión.</p>
+   <dl class="facts rv"><dt>2000</dt><dd>el año en que Essilor nos dio el título de centro Varilux especialista.</dd></dl>
+  </div>
+ </div>
+</section>
+
+<section class="ear" id="audifonos" aria-labelledby="ear-t">
+ <p class="mega rv" aria-hidden="true">¿Cómo?</p>
+ <div class="wrap">
+  <div class="under">
+   <h2 class="h2 rv" id="ear-t">Cuando oyes, pero no entiendes</h2>
+   <p class="lead rv">La pérdida de oído llega poco a poco y casi siempre a los dos oídos, por eso solemos darnos cuenta tarde. El estudio de tu audición se hace en cuatro pruebas, sin molestias, y con el resultado te adaptamos el audífono que te conviene.</p>
+  </div>
+  <svg class="wave" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 45 C 40 5, 80 85, 120 45 S 200 10, 240 45 S 320 75, 360 45 S 440 20, 480 45 S 560 65, 600 45 S 680 30, 720 45 S 800 58, 840 45 S 920 38, 960 45 S 1040 51, 1080 45 S 1160 44, 1200 45"/><path class="lit" d="M0 45 C 40 5, 80 85, 120 45 S 200 10, 240 45 S 320 75, 360 45 S 440 20, 480 45 S 560 65, 600 45 S 680 30, 720 45 S 800 58, 840 45 S 920 38, 960 45 S 1040 51, 1080 45 S 1160 44, 1200 45"/></svg>
+  <ol class="tests">{tests_html}</ol>
+  <p class="more rv"><a class="tlink" href="{u('salud-auditiva/')}">Tipos de pérdida y de audífono <span class="arrow">→</span></a></p>
+ </div>
+</section>
+
+<section aria-labelledby="mar-t" style="padding-top:0">
+ <div class="wrap reel-head">
+  <div><h2 class="h2 rv" id="mar-t">Monturas para probarse con calma</h2><p class="lead rv">Solo primeras marcas, de las clásicas a las atrevidas. Ven, pruébatelas delante del espejo, y te decimos con sinceridad cuál te favorece.</p></div>
+  <div class="reel-nav"><button type="button" data-dir="prev" aria-label="Fotos anteriores">←</button><button type="button" data-dir="next" aria-label="Fotos siguientes">→</button></div>
+ </div>
+ <div class="reel" tabindex="0" aria-label="Fotos de monturas">{reel_html}</div>
+ <div class="wrap"><ul class="brands rv" aria-label="Algunas de nuestras marcas"><li>Varilux</li><li>Etnia Barcelona</li><li>Persol</li><li>Ray-Ban</li></ul>
+ <p style="margin-top:28px" class="rv"><a class="tlink" href="{u('nuestras-marcas/')}">Gafas y marcas <span class="arrow">→</span></a></p></div>
+</section>
+
+<section id="tiendas" aria-labelledby="tie-t" style="padding-top:0">
+ <div class="wrap duo-head"><h2 class="h2 rv" id="tie-t">Dos tiendas, una forma de trabajar</h2></div>
+ {duo_block()}
+</section>
+
+<section aria-labelledby="his-t" style="padding-top:0">
+ <div class="wrap years">
+  <figure class="rv">{pic("pita", [600, 1057], "Una pita florecida en el desierto de Almería bajo un cielo de atardecer", "(max-width:1020px) 100vw, 40vw")}</figure>
+  <div>
+   <p class="lbl rv">Nosotros</p>
+   <h2 class="h2 rv" id="his-t">Un viaje que empezó en Albox</h2>
+   <ol>
+    <li class="rv"><b>1980</b><p>Abrimos en Albox. Desde entonces hemos cambiado de siglo, de aparatos y de imagen más de una vez.</p></li>
+    <li class="rv"><b>2000</b><p>Essilor nos nombra centro Varilux especialista por los instrumentos de medida y por la formación del equipo.</p></li>
+    <li class="rv"><b>Hoy</b><p>Albox y Huércal-Overa, salud visual y auditiva, y la misma idea de siempre: cuidar tu mirada con calidad y con trato de amigo.</p></li>
+   </ol>
+   <p class="rv" style="margin-top:32px"><a class="tlink" href="{u('nosotros/')}">Quiénes somos <span class="arrow">→</span></a></p>
+  </div>
+ </div>
+</section>
+
+<section aria-labelledby="blog-t" style="padding-top:0">
+ <div class="wrap">
+  <div class="sec-head"><h2 class="h2 rv" id="blog-t">Adicta a las gafas, el blog de Carmen</h2>
+  <p class="lead rv">Cómo cuidar las lentillas, cómo descansar la vista del ordenador y alguna montura de la que nos enamoramos.</p></div>
+  <ul class="posts rv">{posts_html}</ul>
+ </div>
+</section>
+
+<section aria-labelledby="faq-t" style="padding-top:0">
+ <div class="wrap faq">
+  <h2 class="h2 rv" id="faq-t">Lo que más nos preguntáis en el mostrador</h2>
+  <div class="rv">{faq_html}</div>
+ </div>
+</section>
+{cita_block()}"""
+    ld = [ORG] + [store_ld(s) for s in STORES] + [faq_ld(FAQ_HOME), {"@type": "WebSite", "@id": LIVE + "#web", "url": LIVE, "name": "Óptica Almería", "inLanguage": "es"}]
+    pre = f'<link rel="preload" as="image" href="{u("img/gafas-sol-desierto-1170.avif")}" type="image/avif" fetchpriority="high">'
+    page("", "Óptica en Albox y Huércal-Overa · Gafas, progresivos y audífonos | Óptica Almería",
+         "Ópticos y audioprotesistas en Albox y Huércal-Overa desde 1980. Revisión de la vista, progresivos Varilux, lentillas y audífonos con audiometría en cabina. Pide cita.",
+         ld, body, preload=pre)
+
+def contacto():
+    body = phead("Tiendas", "Tiendas", "Dos tiendas, en Albox y Huércal-Overa",
+                 "Las dos tienen gabinete de optometría. Llama antes de venir y te damos hora para que no tengas que esperar.") + f"""
+<section style="padding-top:0">{duo_block("h2")}
+ <div class="wrap"><p class="note" style="margin-top:36px">¿Dudas? Escríbenos a <a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a> y te contestamos.</p></div>
+</section>
+{cita_block()}"""
+    page("contacto", "Tiendas y contacto en Albox y Huércal-Overa | Óptica Almería",
+         "Óptica Almería en Avenida Puente 9 de Albox (950 43 00 12) y Avenida Guillermo Reyna 16 de Huércal-Overa (950 13 41 99). Cómo llegar y pedir cita.",
+         [ORG] + [store_ld(s) for s in STORES] + [crumbs_ld([("", "Inicio"), ("contacto/", "Tiendas")])], body, cur="contacto/")
 
 if __name__ == "__main__":
     home(); salud_visual(); salud_auditiva(); marcas(); nosotros(); contacto()
