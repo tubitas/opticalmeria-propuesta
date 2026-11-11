@@ -506,3 +506,11 @@ body{font-size:clamp(18px,.45vw + 13px,21px)}
 .linkbtn{all:unset;cursor:pointer}
 .linkbtn:hover{color:#fff;text-decoration:underline}
 .linkbtn:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* v5.5: marcas por origen, crédito en el pie */
+.brandgroups{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:40px 56px;margin-top:48px}
+.bgroup h3{font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--carey);margin:0 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.blist{list-style:none;margin:0;padding:0;columns:2;column-gap:24px;font-size:clamp(17px,1.4vw,20px);line-height:1.9}
+.blist li{break-inside:avoid}
+.foot .legal .credit{margin-left:auto;opacity:.6}
+.foot .legal .credit:hover{opacity:1}

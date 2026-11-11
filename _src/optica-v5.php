@@ -2,7 +2,7 @@
 /*
 Plugin Name: Óptica Almería · diseño nuevo (v5)
 Description: Sirve la portada y las páginas de servicios y tiendas con el diseño nuevo. El blog, las entradas y el escritorio siguen en WordPress. Para volver a la web anterior basta con desactivar este plugin.
-Version: 5.4.3
+Version: 5.5
 Author: Antonio Martínez Rosado
 */
 if (!defined('ABSPATH')) exit;

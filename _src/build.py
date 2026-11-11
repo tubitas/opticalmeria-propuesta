@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "5.4.2"
+VER = "5.5"
 
 def u(p=""):
     return BASE + p
@@ -161,7 +161,7 @@ def footer():
   <div><h2>Tiendas</h2><ul>{stores}</ul></div>
   <div><h2>La web</h2><ul>{nav}<li><a href="{LIVE}blog/">Blog de Carmen</a></li></ul></div>
   <div><h2>Escríbenos</h2><ul><li><a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></li></ul></div>
-  <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/">Aviso legal</a><a href="{LIVE}politica-de-privacidad/">Privacidad</a><a href="{LIVE}politica-de-cookies/">Cookies</a><button type="button" class="cky-banner-element linkbtn">Configurar cookies</button></p>
+  <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/">Aviso legal</a><a href="{LIVE}politica-de-privacidad/">Privacidad</a><a href="{LIVE}politica-de-cookies/">Cookies</a><button type="button" class="cky-banner-element linkbtn">Configurar cookies</button><a class="credit" href="https://geovisibilidad.com/">Web: geovisibilidad</a></p>
  </div>
 </footer>
 <nav class="callbar" aria-label="Llamar a una tienda">{calls}</nav>
@@ -301,10 +301,10 @@ def home():
   <p class="lead rv">Trabajamos solo con primeras marcas, de las más clásicas a las más atrevidas. Ven a probártelas: te decimos con sinceridad cuál te favorece y cuál no.</p></div>
   <div class="frames">
    <figure class="f1 rv">{pic("gafas-sol-desierto", [640, 1170], "Dos chicas con gafas de sol entre rocas del desierto de Almería", "(max-width:700px) 100vw, 56vw")}</figure>
-   <figure class="rv">{pic("etnia", [640, 1200], "Montura de pasta de carey con varillas de colores de Etnia Barcelona", "(max-width:700px) 100vw, 42vw")}</figure>
+   <figure class="rv">{pic("etnia", [640, 1200], "Montura de pasta de carey con varillas de colores", "(max-width:700px) 100vw, 42vw")}</figure>
    <figure class="rv">{pic("monturas-redondas", [640, 1126], "Cuatro gafas de sol redondas de acetato en distintos colores", "(max-width:700px) 100vw, 42vw")}</figure>
   </div>
-  <div class="marquee rv"><ul class="brands" aria-label="Algunas de nuestras marcas"><li>Varilux</li><li>Etnia Barcelona</li><li>Persol</li><li>Ray-Ban</li></ul><ul class="brands" aria-hidden="true"><li>Varilux</li><li>Etnia Barcelona</li><li>Persol</li><li>Ray-Ban</li></ul></div>
+  <div class="marquee rv"><ul class="brands" aria-label="Algunas de nuestras marcas"><li>Varilux</li><li>Ray-Ban</li><li>Persol</li><li>LOEWE</li><li>Silhouette</li><li>Gigi Studios</li><li>Emporio Armani</li><li>Oakley</li></ul><ul class="brands" aria-hidden="true"><li>Varilux</li><li>Ray-Ban</li><li>Persol</li><li>LOEWE</li><li>Silhouette</li><li>Gigi Studios</li><li>Emporio Armani</li><li>Oakley</li></ul></div>
   <p style="margin-top:22px" class="rv"><a class="tlink" href="{u('nuestras-marcas/')}">Todas las marcas <span class="arrow">→</span></a></p>
  </div>
 </section>
@@ -358,7 +358,7 @@ def store_card(s, h="h3"):
   <{h} class="h3"><a href="{u("opticas/" + s["slug"] + "/")}" style="text-decoration:none">{s["town"]}</a></{h}>
   <address>{s["street"]}, {s["cp"]} {s["town"]} (Almería)</address>
   <a class="tel" href="tel:{s["tel_e164"]}">{s["tel"]}</a>
-  <p class="hours">Horario: <a href="{s["maps"]}" rel="noopener">míralo en Google Maps</a></p>
+  <p class="hours">Lunes a viernes, 9:30–14:00 y 17:40–20:30 (en verano, tarde de 17:00 a 20:00). Sábados, 10:00–14:00.</p>
   <div class="acts"><a class="btn" href="tel:{s["tel_e164"]}">{PHONE_SVG}Llamar</a><a class="btn ghost" href="{s["maps"]}" rel="noopener">{PIN_SVG}Cómo llegar</a></div>
  </div>
 </article>'''
@@ -447,10 +447,23 @@ def salud_auditiva():
          [ORG, crumbs_ld([("", "Inicio"), ("salud-auditiva/", "Audífonos")])], body, cur="salud-auditiva/")
 
 # ---------- MARCAS ----------
+# Lista que mandó Carmen por WhatsApp el 10/11/2026, ordenada por su origen. Etnia Barcelona ya no está.
+MARCAS = [
+    ("Españolas", ["Gigi Studios", "Kaleos", "Zoco", "Tiwi", "Antonio Miró", "Archy Welfare", "LOEWE", "Atlant", "Nano"]),
+    ("Del resto de Europa", ["Silhouette", "Vogue Eyewear", "Emporio Armani", "eyepetizer", "Osix", "Thema", "Kenzo", "Dsquared2",
+                             "David Beckham", "Victoria Beckham", "Pierre Cardin", "Hugo Boss", "HUGO", "Isabel Marant", "Carrera",
+                             "Carrera Ducati", "Persol", "Swarovski", "Cébé", "Bollé", "evil eye"]),
+    ("De fuera de Europa", ["Ray-Ban", "Ralph", "Polo Ralph Lauren", "Michael Kors", "Marc Jacobs", "Arnette", "Under Armour",
+                            "Tommy Hilfiger", "Levi’s", "Polaroid", "Oakley", "Barbie", "Avengers", "Sonic"]),
+]
+N_MARCAS = sum(len(m) for _, m in MARCAS)
+def marcas_html():
+    return "".join(f'<div class="bgroup"><h3>{t}</h3><ul class="blist">' + "".join(f"<li>{m}</li>" for m in ms) + "</ul></div>" for t, ms in MARCAS)
+
 def marcas():
     body = phead("Gafas y marcas", "Gafas y marcas", "Monturas de primeras marcas",
                  "De las más clásicas a las más atrevidas. Sea cual sea tu estilo, encontramos la gafa que te favorece.",
-                 "etnia", [640, 1200], "Montura de carey con varillas de colores de Etnia Barcelona") + f'''
+                 "etnia", [640, 1200], "Montura de carey con varillas de colores") + f'''
 <section style="padding-top:clamp(40px,5vw,72px)">
  <div class="wrap">
   <div class="frames">
@@ -460,14 +473,14 @@ def marcas():
   </div>
   <div class="prose" style="margin-top:56px">
    <h2>Solo primeras marcas</h2>
-   <p>Así podemos garantizar que cada montura y cada lente son de la máxima calidad y cumplen todas las normas sanitarias. En la tienda tenemos muchas más de las que caben aquí: ven a probártelas sin compromiso.</p>
-   <ul class="brands" style="margin-top:12px"><li>Varilux</li><li>Etnia Barcelona</li><li>Persol</li><li>Ray-Ban</li></ul>
+   <p>Así podemos garantizar que cada montura y cada lente son de la máxima calidad y cumplen todas las normas sanitarias. Estas son las {N_MARCAS} marcas de monturas y gafas de sol que tenemos ahora, ordenadas por su origen. En lentes graduadas trabajamos con Varilux, de Essilor. Ven a probártelas sin compromiso.</p>
   </div>
+  <div class="brandgroups">{marcas_html()}</div>
  </div>
 </section>
 {cita_block()}'''
     page("nuestras-marcas", "Gafas graduadas y de sol de primeras marcas en Albox | Óptica Almería",
-         "Monturas graduadas y gafas de sol de primeras marcas como Etnia Barcelona, Persol y Ray-Ban, y lentes Varilux, en Albox y Huércal-Overa.",
+         f"{N_MARCAS} marcas de monturas y gafas de sol, de Ray-Ban, Persol y LOEWE a Gigi Studios y Silhouette, y lentes Varilux, en Albox y Huércal-Overa.",
          [ORG, crumbs_ld([("", "Inicio"), ("nuestras-marcas/", "Gafas y marcas")])], body, cur="nuestras-marcas/")
 
 # ---------- NOSOTROS ----------
@@ -519,7 +532,7 @@ def tienda(s):
   <dl class="info">
    <div><dt>Dirección</dt><dd>{s["street"]}<br>{s["cp"]} {s["town"]} (Almería)</dd></div>
    <div><dt>Teléfono</dt><dd><a href="tel:{s["tel_e164"]}">{s["tel"]}</a></dd></div>
-   <div><dt>Horario</dt><dd><a href="{s["maps"]}" rel="noopener">Míralo en Google Maps</a></dd></div>
+   <div><dt>Horario</dt><dd>Lunes a viernes, de 9:30 a 14:00 y de 17:40 a 20:30<br>En verano, por la tarde, de 17:00 a 20:00<br>Sábados, de 10:00 a 14:00</dd></div>
   </dl>
   <div class="ctas" style="margin:32px 0 56px"><a class="btn" href="tel:{s["tel_e164"]}">{PHONE_SVG}Llamar a {s["town"]}</a><a class="btn ghost" href="{s["maps"]}" rel="noopener">{PIN_SVG}Cómo llegar</a></div>
   <div class="map" data-src="{s["embed"]}" data-title="Mapa de Óptica Almería en {s["town"]}"><button type="button" class="map-on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Ver el mapa</span><small>Al pulsar se carga Google Maps, que usa sus propias cookies.</small></button></div>
