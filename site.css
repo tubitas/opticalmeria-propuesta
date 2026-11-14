@@ -512,8 +512,8 @@ body{font-size:clamp(18px,.45vw + 13px,21px)}
 .bgroup h3{font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--carey);margin:0 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .blist{list-style:none;margin:0;padding:0;columns:2;column-gap:24px;font-size:clamp(17px,1.4vw,20px);line-height:1.9}
 .blist li{break-inside:avoid}
-.foot .legal .credit{margin-left:auto;opacity:.6}
-.foot .legal .credit:hover{opacity:1}
+.foot .legal .credit{margin-left:auto;color:#a39c8e}
+.foot .legal .credit:hover{color:var(--paper)}
 
 /* idioma ES/EN */
 .lang{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 10px;font-size:15px;font-weight:500;letter-spacing:.06em;color:var(--ink);text-decoration:none;border:1.5px solid var(--line, rgba(0,0,0,.18));border-radius:999px;transition:border-color .2s}
