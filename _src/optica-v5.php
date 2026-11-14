@@ -2,7 +2,7 @@
 /*
 Plugin Name: Óptica Almería · diseño nuevo (v5)
 Description: Sirve la portada y las páginas de servicios y tiendas con el diseño nuevo. El blog, las entradas y el escritorio siguen en WordPress. Para volver a la web anterior basta con desactivar este plugin.
-Version: 5.7
+Version: 5.8
 Author: Antonio Martínez Rosado
 */
 if (!defined('ABSPATH')) exit;
@@ -25,6 +25,51 @@ add_action('wp_head', function () {
   echo "<meta name=\"google-site-verification\" content=\"0YPlPvpoRA9SeORL0uxpqpZ5tDNcMUuYufSjYXVFE6w\" />\n";
   echo "<script id=\"ov5-consent\">/* googletagmanager + metricool tras consentimiento */\n(function(){var cargado=false;function cargar(){if(cargado)return;cargado=true;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-JX418GQGP7';document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config','G-JX418GQGP7');var m=document.createElement('script');m.src='https://tracker.metricool.com/resources/be.js';m.onload=function(){beTracker.t({hash:'d28a629050eeb5d96ad3c05f9355aec4'})};document.head.appendChild(m);}\nfunction mirar(){try{var c=window.getCkyConsent&&getCkyConsent();if(c&&c.categories&&c.categories.analytics)cargar();}catch(e){}}\ndocument.addEventListener('cookieyes_consent_update',function(e){if(e.detail&&e.detail.accepted&&e.detail.accepted.indexOf('analytics')>-1)cargar();});\nif(document.readyState!=='loading')mirar();else document.addEventListener('DOMContentLoaded',mirar);window.addEventListener('load',mirar);})();</script>\n";
 }, 1);
+// Aviso de CookieYes en inglés en /en/ (el plan gratis de CookieYes solo admite un idioma; se traduce al servir la página).
+function ov5_cky_en($s) {
+    $t = array(
+        'Valoramos tu privacidad' => 'We value your privacy',
+        'Usamos cookies para mejorar su experiencia de navegación, mostrarle anuncios o contenidos personalizados y analizar nuestro tráfico. Al hacer clic en “Aceptar todo” usted da su consentimiento a nuestro uso de las cookies.' => 'We use cookies to improve your browsing experience, show you personalised ads or content and analyse our traffic. By clicking “Accept all” you consent to our use of cookies.',
+        'Personalizar las preferencias de consentimiento' => 'Customise consent preferences',
+        'Usamos cookies para ayudarle a navegar de manera eficiente y realizar ciertas funciones. Encontrará información detallada sobre cada una de las cookies bajo cada categoría de consentimiento a continuación.' => 'We use cookies to help you navigate efficiently and perform certain functions. You will find detailed information about all cookies under each consent category below.',
+        'Las cookies categorizadas como “Necesarias” se guardan en su navegador, ya que son esenciales para permitir las funcionalidades básicas del sitio web.' => 'The cookies categorised as “Necessary” are stored on your browser as they are essential for enabling the basic functionalities of the site.',
+        'También utilizamos cookies de terceros que nos ayudan a analizar cómo usted utiliza este sitio web, guardar sus preferencias y aportar el contenido y la publicidad que le sean relevantes. Estas cookies solo se guardan en su navegador previo consentimiento por su parte.' => 'We also use third-party cookies that help us analyse how you use this website, store your preferences and provide content and advertisements that are relevant to you. These cookies will only be stored in your browser with your prior consent.',
+        'Puede optar por activar o desactivar alguna o todas estas cookies, aunque la desactivación de algunas podría afectar a su experiencia de navegación.' => 'You can choose to enable or disable some or all of these cookies, but disabling some of them may affect your browsing experience.',
+        'Las cookies necesarias son cruciales para las funciones básicas del sitio web y el sitio web no funcionará de la forma prevista sin ellas.Estas cookies no almacenan ningún dato de identificación personal.' => 'Necessary cookies are required for the basic functions of this site, which will not work as intended without them. These cookies do not store any personally identifiable data.',
+        'Las cookies funcionales ayudan a realizar ciertas funcionalidades, como compartir el contenido del sitio web en plataformas de redes sociales, recopilar comentarios y otras características de terceros.' => 'Functional cookies help perform certain functionalities like sharing the content of the website on social media platforms, collecting feedback and other third-party features.',
+        'Las cookies analíticas se utilizan para comprender cómo interactúan los visitantes con el sitio web. Estas cookies ayudan a proporcionar información sobre métricas el número de visitantes, el porcentaje de rebote, la fuente de tráfico, etc.' => 'Analytical cookies are used to understand how visitors interact with the website. These cookies help provide information on metrics such as the number of visitors, bounce rate, traffic source, etc.',
+        'Las cookies de rendimiento se utilizan para comprender y analizar los índices de rendimiento clave del sitio web, lo que ayuda a proporcionar una mejor experiencia de usuario para los visitantes.' => 'Performance cookies are used to understand and analyse the key performance indexes of the website, which helps in delivering a better user experience for the visitors.',
+        "Las cookies publicitarias se utilizan para entregar a los visitantes anuncios personalizados basados \u{200B}\u{200B}en las páginas que visitaron antes y analizar la efectividad de la campaña publicitaria." => 'Advertisement cookies are used to provide visitors with customised advertisements based on the pages they visited previously and to analyse the effectiveness of the ad campaigns.',
+        'Por favor acepte el consentimiento de cookies' => 'Please accept cookie consent',
+        'No vendan ni compartan mi información personal' => 'Do not sell or share my personal information',
+        'No hay cookies para mostrar.' => 'No cookies to display.',
+        'Guardar mis preferencias' => 'Save my preferences',
+        'Preferencias de consentimiento' => 'Consent preferences',
+        'Política de cookies' => 'Cookie policy',
+        'Siempre activas' => 'Always active',
+        'Rechazar todo' => 'Reject all',
+        'Aceptar todo' => 'Accept all',
+        'Mostrar más' => 'Show more',
+        'Mostrar menos' => 'Show less',
+        'Necesaria' => 'Necessary',
+        'Funcional' => 'Functional',
+        'Analítica' => 'Analytics',
+        'el rendimiento' => 'Performance',
+        'Anuncio' => 'Advertisement',
+        'Permitir' => 'Enable',
+        'Desactivar' => 'Disable',
+        'Cerca' => 'Close',
+    );
+    $j = array();
+    foreach ($t as $es => $en) {
+        $j[$es] = $en;
+        $e1 = substr(wp_json_encode($es), 1, -1);
+        if ($e1 !== $es) $j[$e1] = substr(wp_json_encode($en), 1, -1);
+        $e2 = substr(json_encode($es, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1);
+        if (!isset($j[$e2])) $j[$e2] = substr(json_encode($en, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1);
+    }
+    return strtr($s, $j);
+}
 // ---------- Versión inglesa del blog y de los legales (5.7) ----------
 // Traducciones: site/en/traducciones.json (entradas existentes) + campo «ov5_en» de cada entrada o página
 // (JSON con path, title, seo_title, desc, html y, opcional, image). El blog automático escribe ese campo.
@@ -220,6 +265,7 @@ add_action('template_redirect', function () {
     // aviso de cookies y analítica: los mismos que ya tiene la web, sacados de WordPress
     ob_start(); wp_head(); $cab = ov5_trozos(ob_get_clean());
     ob_start(); wp_footer(); $pie = ov5_trozos(ob_get_clean());
+    if ($ruta === 'en' || strpos($ruta, 'en/') === 0) { $cab = ov5_cky_en($cab); $pie = ov5_cky_en($pie); }
     $cab = '<meta name="google-site-verification" content="0YPlPvpoRA9SeORL0uxpqpZ5tDNcMUuYufSjYXVFE6w" />' . "\n" . $cab;
     $html = str_replace('</head>', $cab . '</head>', $html);
     $html = str_replace('</body>', $pie . '</body>', $html);
