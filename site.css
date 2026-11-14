@@ -523,3 +523,9 @@ body{font-size:clamp(18px,.45vw + 13px,21px)}
 @media (max-width:1020px){.nav>.lang{display:none}}
 .optonav .lang2{display:inline-flex;align-items:center;gap:10px;margin-top:28px;min-height:44px;font-size:17px;color:var(--ink);text-decoration:underline;text-underline-offset:4px}
 .foot .lang2{color:inherit}
+/* blog y legales en inglés (5.7) */
+.ov5-art{max-width:46em}
+.ov5-art img{margin:24px 0;border-radius:4px}
+.ov5-art table{width:100%;border-collapse:collapse;margin:20px 0;font-size:16px}
+.ov5-art th,.ov5-art td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+@media (max-width:700px){.ov5-art table,.ov5-art thead,.ov5-art tbody,.ov5-art tr,.ov5-art th,.ov5-art td{display:block}.ov5-art thead{display:none}.ov5-art tr{border-bottom:1px solid var(--line);padding:8px 0}.ov5-art td{border:0;padding:2px 0}}

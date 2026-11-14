@@ -2,9 +2,10 @@
 """Versión en inglés de opticalmeria.com, en /en/. Mismo diseño, CSS, JS y fotos que build.py.
 Uso: igual que build.py (mismas variables BASE, ASSETS, NOINDEX, OUT). Ejecutar DESPUÉS de build.py.
 Pensada para los residentes británicos e irlandeses del Almanzora y el Levante: inglés británico
-(«varifocals», «eye test», «centre»). Los textos legales y el blog siguen en español."""
+(«varifocals», «eye test», «centre»). El blog y los legales en inglés salen de traducciones_en.py y del campo «ov5_en» (plugin 5.7)."""
 import json, html, re
 import build as B
+from traducciones_en import ENTRADAS
 from build import LIVE, STORES, LOGO, PHONE_SVG, PIN_SVG, pic, a, u, crumbs_ld, slash
 
 ES_OF = {v: k for k, v in B.EN_PATHS.items()}
@@ -62,8 +63,8 @@ def head(title, desc, path, ld, preload=""):
 <a class="skip" href="#main">Skip to content</a>
 '''
 
-def header(cur, path):
-    es = ES_OF[path]
+def header(cur, path, es_href=None):
+    es_href = es_href or u(slash(ES_OF[path]))
     links = "".join(f'<a href="{u(p)}"{" aria-current=page" if p == cur else ""}>{t}</a>' for p, t in NAV)
     opto = "".join(f'<li><a href="{u(p)}"{" aria-current=page" if p == cur else ""}>{t}</a><small>{d}</small></li>' for (p, t), d in zip([("en/", "Home")] + NAV, ["0.1", "0.2", "0.4", "0.6", "0.8", "1.0"]))
     tels = "".join(f'<a class="btn{" ghost" if i else ""}" href="tel:{s["tel_e164"]}">{PHONE_SVG}Call {s["town"]}</a>' for i, s in enumerate(STORES))
@@ -72,8 +73,8 @@ def header(cur, path):
   <a class="logo" href="{u('en/')}" aria-label="Óptica Almería, home">{LOGO.format(n=1)}<span>Óptica Almería</span></a>
   <nav class="menu" aria-label="Main">{links}</nav>
   <a class="btn" href="{u('en/stores/')}#cita">Book now</a>
-  <a class="lang" href="{u(slash(es))}" hreflang="es" lang="es" title="Versión en español" aria-label="Versión en español">ES</a>
-  <details class="mmenu"><summary><i aria-hidden="true"></i><span class="mo">Menu</span><span class="mc">Close</span></summary><nav class="optonav" aria-label="Main, on mobile"><ol>{opto}</ol><div class="tels">{tels}</div><a class="lang2" href="{u(slash(es))}" hreflang="es" lang="es">Versión en español</a></nav></details>
+  <a class="lang" href="{es_href}" hreflang="es" lang="es" title="Versión en español" aria-label="Versión en español">ES</a>
+  <details class="mmenu"><summary><i aria-hidden="true"></i><span class="mo">Menu</span><span class="mc">Close</span></summary><nav class="optonav" aria-label="Main, on mobile"><ol>{opto}</ol><div class="tels">{tels}</div><a class="lang2" href="{es_href}" hreflang="es" lang="es">Versión en español</a></nav></details>
  </div>
 </header>
 <main id="main">
@@ -83,7 +84,7 @@ def cita_block():
     phones = "".join(f'<a href="tel:{s["tel_e164"]}"><span>{s["town"]}</span><b>{INTL[s["slug"]]}</b></a>' for s in STORES)
     return f'''<section class="night cita" id="cita" aria-labelledby="cita-t">
  <div class="wrap">
-  <h2 class="h2 rv" id="cita-t">Call whichever shop is closer to you</h2>
+  <h2 class="h2 rv" id="cita-t">Call whichever shop is closer to you. We speak English</h2>
   <p class="lead rv">We’ll give you a time for your eye test or hearing test. If you’re not sure what you need, tell us on the phone and we’ll point you in the right direction.</p>
   <div class="phones rv">{phones}</div>
   <p class="mail">Or email us at <a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></p>
@@ -91,8 +92,8 @@ def cita_block():
 </section>
 '''
 
-def footer(path):
-    es = ES_OF[path]
+def footer(path, es_href=None):
+    es_href = es_href or u(slash(ES_OF[path]))
     stores = "".join(f'<li><a href="{u("en/opticians/" + s["slug"] + "/")}">{s["town"]}</a> · <a href="tel:{s["tel_e164"]}">{INTL[s["slug"]]}</a></li>' for s in STORES)
     nav = "".join(f'<li><a href="{u(p)}">{t}</a></li>' for p, t in NAV)
     calls = "".join(f'<a class="btn{" ghost" if i else ""}" href="tel:{s["tel_e164"]}">{PHONE_SVG}{s["town"]}</a>' for i, s in enumerate(STORES))
@@ -105,9 +106,9 @@ def footer(path):
    <p>Opticians and hearing care specialists in Albox and Huércal-Overa since 1980. Varilux specialist centre since 2000.</p>
   </div>
   <div><h2>Our stores</h2><ul>{stores}</ul></div>
-  <div><h2>This site</h2><ul>{nav}<li><a href="{LIVE}blog/" hreflang="es">Carmen’s blog (in Spanish)</a></li><li><a class="lang2" href="{u(slash(es))}" hreflang="es" lang="es">Versión en español</a></li></ul></div>
+  <div><h2>This site</h2><ul>{nav}<li><a href="{u('en/blog/')}">Carmen’s blog</a></li><li><a class="lang2" href="{es_href}" hreflang="es" lang="es">Versión en español</a></li></ul></div>
   <div><h2>Write to us</h2><ul><li><a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></li></ul></div>
-  <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/" hreflang="es">Legal notice</a><a href="{LIVE}politica-de-privacidad/" hreflang="es">Privacy</a><a href="{LIVE}politica-de-cookies/" hreflang="es">Cookies</a><span>(in Spanish)</span><button type="button" class="cky-banner-element linkbtn">Cookie settings</button><a class="credit" href="https://geovisibilidad.com/">Web: geovisibilidad</a></p>
+  <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{u('en/legal-notice/')}">Legal notice</a><a href="{u('en/privacy-policy/')}">Privacy</a><a href="{u('en/cookie-policy/')}">Cookies</a><button type="button" class="cky-banner-element linkbtn">Cookie settings</button><a class="credit" href="https://geovisibilidad.com/">Web: geovisibilidad</a></p>
  </div>
 </footer>
 <nav class="callbar" aria-label="Call a shop">{calls}</nav>
@@ -152,6 +153,8 @@ PHONES_LINE = 'Albox, <a href="tel:+34950430012">+34 950 43 00 12</a>; Huércal-
 
 # ---------- HOME ----------
 FAQ_HOME = [
+    ("Do you speak English?",
+     "Yes. You can call either shop and be seen in English, from the eye test or hearing test to choosing your frames."),
     ("How often should I have my eyes tested?",
      "The World Health Organization recommends an eye test once a year, even if you don’t wear glasses. It keeps your prescription up to date and helps catch problems such as cataracts early."),
     ("Do you do hearing tests and hearing aids?",
@@ -191,12 +194,13 @@ def home():
     quiz_html = "".join(f'<li><label><input type="checkbox"><span>{q}</span></label></li>' for q in quiz)
     tests_html = "".join(f"<li class='rv'><h3>{x}</h3><p>{y}</p></li>" for x, y in tests)
     stores_html = "".join(store_card(s) for s in STORES)
-    posts_html = "".join(f'<li><a href="{LIVE}{s}/" hreflang="es" lang="es"><time datetime="{d}">{date_en(d)}</time><h3>{t}</h3><span class="arrow" aria-hidden="true">→</span></a></li>' for s, t, d in B.POSTS[:4])
+    blog = sorted([e for e in ENTRADAS if e["type"] == "post"], key=lambda e: e["date"], reverse=True)[:4]
+    posts_html = "".join(f'<li><a href="{u("en/" + e["path"] + "/")}"><time datetime="{e["date"]}">{date_en(e["date"])}</time><h3>{e["title"]}</h3><span class="arrow" aria-hidden="true">→</span></a></li>' for e in blog)
     faq_html = "".join(f"<details><summary>{q}</summary><p>{x}</p></details>" for q, x in FAQ_HOME)
     body = f'''
 <section class="hero6" aria-labelledby="h1">
  <div class="h6-copy">
-  <p class="lbl">Albox and Huércal-Overa · since 1980</p>
+  <p class="lbl">We speak English · Albox and Huércal-Overa</p>
   <h1 class="h1" id="h1">Glasses made to measure for your eyes</h1>
   <div class="ctas"><a class="btn" href="#cita">Book an appointment</a><a class="btn ghost" href="#tiendas">See our shops</a></div>
  </div>
@@ -292,8 +296,8 @@ def home():
 
 <section aria-labelledby="blog-t">
  <div class="wrap">
-  <div class="sec-head"><div><h2 class="h2 rv" id="blog-t">Carmen’s blog, in Spanish</h2></div>
-  <p class="lead rv">Tips on caring for your contact lenses, resting your eyes from the computer, and the odd frame we’ve fallen in love with. Carmen writes it in Spanish.</p></div>
+  <div class="sec-head"><div><h2 class="h2 rv" id="blog-t">Addicted to glasses, Carmen’s blog</h2></div>
+  <p class="lead rv">Tips on caring for your contact lenses, resting your eyes from the computer, and the odd frame we’ve fallen in love with. <a class="tlink" href="{u('en/blog/')}">All posts <span class="arrow">→</span></a></p></div>
   <ul class="posts rv">{posts_html}</ul>
  </div>
 </section>
@@ -448,7 +452,7 @@ def about():
 def stores():
     cards = "".join(store_card(s, "h2") for s in STORES)
     body = phead("Our stores", "Two shops, in Albox and Huércal-Overa",
-                 "Both have an optometry consulting room. Call before you come and we’ll give you a time, so you don’t have to wait.") + f'''
+                 "Both have an optometry consulting room and we speak English in both. Call before you come and we’ll give you a time, so you don’t have to wait.") + f'''
 <section style="padding-top:0">
  <div class="wrap"><div class="stores">{cards}</div>
  <p class="note" style="margin-top:36px">Any questions? Email us at <a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a> and we’ll get back to you.</p></div>
@@ -470,6 +474,7 @@ def shop(s):
   <dl class="info">
    <div><dt>Address</dt><dd>{s["street"]}<br>{s["cp"]} {s["town"]} (Almería), Spain</dd></div>
    <div><dt>Phone</dt><dd><a href="tel:{s["tel_e164"]}">{tel}</a></dd></div>
+   <div><dt>Languages</dt><dd>English and Spanish</dd></div>
    <div><dt>Opening hours</dt><dd>Monday to Friday, 9:30am to 2pm and 5:40pm to 8:30pm<br>In summer, afternoons 5pm to 8pm<br>Saturdays, 10am to 2pm</dd></div>
   </dl>
   <div class="ctas" style="margin:32px 0 56px"><a class="btn" href="tel:{s["tel_e164"]}">{PHONE_SVG}Call {s["town"]}</a><a class="btn ghost" href="{s["maps"]}" rel="noopener">{PIN_SVG}Directions</a></div>
@@ -492,6 +497,44 @@ def shop(s):
          f"Óptica Almería at {s['street']}, {s['town']}. Eye tests, Varilux varifocals, contact lenses and hearing aids. Phone {tel}.",
          [ORG, store_ld_en(s), crumbs_ld([("en/", "Home"), ("en/stores/", "Our stores"), (f"en/opticians/{s['slug']}/", s["town"])])], body, cur="en/stores/")
 
+# ---------- PLANTILLA para blog y legales (la rellena el plugin) ----------
+def plantilla():
+    """Cabecera, pie y bloque de cita en inglés con huecos %%…%% que rellena optica-v5.php."""
+    robots = '<meta name="robots" content="noindex,nofollow">' if B.NOINDEX else ""
+    head_t = f'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>document.documentElement.className="js"</script>
+<title>%%TITLE%%</title>
+<meta name="description" content="%%DESC%%">
+{robots}
+<link rel="canonical" href="%%CANONICAL%%">
+%%ALTERNATES%%
+<meta property="og:type" content="%%OGTYPE%%">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:site_name" content="Óptica Almería">
+<meta property="og:title" content="%%TITLE%%">
+<meta property="og:description" content="%%DESC%%">
+<meta property="og:image" content="%%OGIMAGE%%">
+<meta name="theme-color" content="#f5f0e8">
+<link rel="icon" href="{LIVE}wp-content/uploads/2024/08/cropped-icono.png">
+<link rel="preload" href="{a('fonts/jost.woff2')}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{a('site.css')}?v={B.VER}">
+<script type="application/ld+json">%%LD%%</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+'''
+    html_t = head_t + header("en/blog/", "en", es_href="%%ES%%") + "%%BODY%%\n" + cita_block() + footer("en", es_href="%%ES%%")
+    (B.OUT / "en").mkdir(parents=True, exist_ok=True)
+    (B.OUT / "en" / "_plantilla.html").write_text(html_t, encoding="utf-8")
+    (B.OUT / "en" / "traducciones.json").write_text(json.dumps(ENTRADAS, ensure_ascii=False, indent=1), encoding="utf-8")
+    print("ok en/_plantilla.html + en/traducciones.json", len(ENTRADAS))
+
 if __name__ == "__main__":
+    plantilla()
     home(); eye_care(); hearing(); brands(); about(); stores()
     for s in STORES: shop(s)

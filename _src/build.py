@@ -85,7 +85,7 @@ def pic(name, widths, alt, sizes="100vw", cls="", eager=False, w=None, h=None):
 # ---------- datos estructurados ----------
 ORG = {"@type": "Organization", "@id": LIVE + "#org", "name": "Óptica Almería", "url": LIVE,
        "logo": LIVE + "wp-content/uploads/2024/08/cropped-icono.png", "email": "info@opticalmeria.com",
-       "foundingDate": "1980", "award": "Centro Varilux especialista desde 2000",
+       "foundingDate": "1980", "knowsLanguage": ["es", "en"], "award": "Centro Varilux especialista desde 2000",
        "department": [{"@id": LIVE + f"opticas/{s['slug']}/#tienda"} for s in STORES]}
 def store_ld(s):
     return {"@type": "Optician", "@id": LIVE + f"opticas/{s['slug']}/#tienda", "name": s["name"],
