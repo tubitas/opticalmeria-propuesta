@@ -1,5 +1,6 @@
 // Cabecera con línea al bajar y aparición suave de bloques. Nada más.
 (function(){
+  var EN=document.documentElement.lang==='en';
   var top=document.getElementById('top');
   var onScroll=function(){top.classList.toggle('scrolled',window.scrollY>8)};
   onScroll();window.addEventListener('scroll',onScroll,{passive:true});
@@ -34,22 +35,24 @@
   // cifras que cuentan al aparecer
   var nums=document.querySelectorAll('.proof b');
   if(nums.length&&!calm&&'IntersectionObserver' in window){
-    var run=function(b){var t=b.textContent,dec=t.indexOf(',')>-1,v=parseFloat(t.replace(',','.')),from=v>1900?v-40:0,t0=performance.now();
-      var f=function(now){var k=Math.min(1,(now-t0)/1400);k=1-Math.pow(1-k,3);var x=from+(v-from)*k;b.textContent=dec?x.toFixed(1).replace('.',','):Math.round(x);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)};
+    var run=function(b){var t=b.textContent,sep=t.indexOf(',')>-1?',':(t.indexOf('.')>-1?'.':''),dec=!!sep,v=parseFloat(t.replace(',','.')),from=v>1900?v-40:0,t0=performance.now();
+      var f=function(now){var k=Math.min(1,(now-t0)/1400);k=1-Math.pow(1-k,3);var x=from+(v-from)*k;b.textContent=dec?x.toFixed(1).replace('.',sep):Math.round(x);if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)};
     var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){run(e.target);io2.unobserve(e.target)}})},{threshold:.6});
     nums.forEach(function(b){io2.observe(b)});}
   // optotipo: dial que enfoca
   var dio=document.getElementById('dio');
   if(dio){var rows=document.querySelector('.chart .rows'),out=document.getElementById('dio-out'),ok=document.querySelector('.tune-ok');
     var upd=function(){var v=parseFloat(dio.value);rows.style.setProperty('--b',(Math.abs(v)*3.2).toFixed(2)+'px');
-      out.textContent=(v<0?'−':'')+Math.abs(v).toFixed(2).replace('.',',');ok.textContent=v===0?'Así, nítido. En el gabinete lo afinamos lente a lente.':''};
+      out.textContent=(v<0?'−':'')+Math.abs(v).toFixed(2).replace('.',EN?'.':',');ok.textContent=v===0?(EN?'That’s it, sharp. In the consulting room we fine-tune it lens by lens.':'Así, nítido. En el gabinete lo afinamos lente a lente.'):''};
     dio.addEventListener('input',upd);upd();}
   // audífonos: ¿te pasa alguna?
   var q=document.querySelector('.quiz');
-  if(q){var qo=q.querySelector('.quiz-out'),tels='<a href="tel:+34950430012">Albox, 950 43 00 12</a> o <a href="tel:+34950134199">Huércal-Overa, 950 13 41 99</a>';
+  if(q){var qo=q.querySelector('.quiz-out'),tels=EN?'<a href="tel:+34950430012">Albox, +34 950 43 00 12</a> or <a href="tel:+34950134199">Huércal-Overa, +34 950 13 41 99</a>':'<a href="tel:+34950430012">Albox, 950 43 00 12</a> o <a href="tel:+34950134199">Huércal-Overa, 950 13 41 99</a>';
     q.addEventListener('change',function(){var n=q.querySelectorAll('input:checked').length;
-      qo.innerHTML=n===0?'Marca las que te suenen.':n===1?'Una sola puede ser cosa de un mal día. Si se repite, ven a vernos.':
-        'Con '+n+', merece la pena estudiar tu audición. Llama y te damos hora: '+tels+'.';});}
+      qo.innerHTML=EN?(n===0?'Tick the ones that ring a bell.':n===1?'Just one could be an off day. If it keeps happening, come and see us.':
+        'With '+n+', it’s worth having your hearing checked. Call and we’ll give you a time: '+tels+'.'):
+        (n===0?'Marca las que te suenen.':n===1?'Una sola puede ser cosa de un mal día. Si se repite, ven a vernos.':
+        'Con '+n+', merece la pena estudiar tu audición. Llama y te damos hora: '+tels+'.');});}
   if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches){
     document.querySelectorAll('.rv').forEach(function(el){el.classList.add('in')});return;}
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});

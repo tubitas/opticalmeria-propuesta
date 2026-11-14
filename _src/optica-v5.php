@@ -2,7 +2,7 @@
 /*
 Plugin Name: Óptica Almería · diseño nuevo (v5)
 Description: Sirve la portada y las páginas de servicios y tiendas con el diseño nuevo. El blog, las entradas y el escritorio siguen en WordPress. Para volver a la web anterior basta con desactivar este plugin.
-Version: 5.5
+Version: 5.6
 Author: Antonio Martínez Rosado
 */
 if (!defined('ABSPATH')) exit;
@@ -40,6 +40,15 @@ add_action('template_redirect', function () {
         'contacto'             => 'contacto/index.html',
         'opticas/albox'        => 'opticas/albox/index.html',
         'opticas/huercal-overa'=> 'opticas/huercal-overa/index.html',
+        // versión en inglés (desde 5.6)
+        'en'                          => 'en/index.html',
+        'en/eye-care'                 => 'en/eye-care/index.html',
+        'en/hearing-aids'             => 'en/hearing-aids/index.html',
+        'en/brands'                   => 'en/brands/index.html',
+        'en/about-us'                 => 'en/about-us/index.html',
+        'en/stores'                   => 'en/stores/index.html',
+        'en/opticians/albox'          => 'en/opticians/albox/index.html',
+        'en/opticians/huercal-overa'  => 'en/opticians/huercal-overa/index.html',
     );
     if (!isset($mapa[$ruta])) return;
     $f = __DIR__ . '/site/' . $mapa[$ruta];

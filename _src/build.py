@@ -9,10 +9,24 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "5.5"
+VER = "5.6"
 
 def u(p=""):
     return BASE + p
+
+# Versión inglesa (build_en.py): misma página en /en/. Clave = path de page() en español.
+EN_PATHS = {"": "en", "tu-salud-visual": "en/eye-care", "salud-auditiva": "en/hearing-aids",
+            "nuestras-marcas": "en/brands", "nosotros": "en/about-us", "contacto": "en/stores",
+            "opticas/albox": "en/opticians/albox", "opticas/huercal-overa": "en/opticians/huercal-overa"}
+_PATH = [""]  # path de la página que se está generando (lo pone page())
+def slash(p):
+    return p + "/" if p else ""
+def alternates(es_path):
+    en = EN_PATHS.get(es_path)
+    if en is None: return ""
+    return (f'<link rel="alternate" hreflang="es" href="{LIVE}{slash(es_path)}">\n'
+            f'<link rel="alternate" hreflang="en" href="{LIVE}{slash(en)}">\n'
+            f'<link rel="alternate" hreflang="x-default" href="{LIVE}{slash(es_path)}">')
 
 ASSETS = os.environ.get("ASSETS", BASE)
 OUT = pathlib.Path(os.environ["OUT"]) if os.environ.get("OUT") else ROOT
@@ -102,8 +116,10 @@ def head(title, desc, path, ld, preload=""):
 <meta name="description" content="{html.escape(desc)}">
 {robots}
 <link rel="canonical" href="{LIVE}{path}{"/" if path else ""}">
+{alternates(path)}
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
+<meta property="og:locale:alternate" content="en_GB">
 <meta property="og:site_name" content="Óptica Almería">
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(desc)}">
@@ -128,11 +144,19 @@ def header(cur):
   <a class="logo" href="{u()}" aria-label="Óptica Almería, inicio">{LOGO.format(n=1)}<span>Óptica Almería</span></a>
   <nav class="menu" aria-label="Principal">{links}</nav>
   <a class="btn" href="{u('contacto/')}#cita">Pedir cita</a>
-  <details class="mmenu"><summary><i aria-hidden="true"></i><span class="mo">Menú</span><span class="mc">Cerrar</span></summary><nav class="optonav" aria-label="Principal en el móvil"><ol>{opto}</ol><div class="tels">{tels}</div></nav></details>
+  {lang_link()}
+  <details class="mmenu"><summary><i aria-hidden="true"></i><span class="mo">Menú</span><span class="mc">Cerrar</span></summary><nav class="optonav" aria-label="Principal en el móvil"><ol>{opto}</ol><div class="tels">{tels}</div>{lang_link(True)}</nav></details>
  </div>
 </header>
 <main id="main">
 '''
+
+def lang_link(big=False):
+    en = EN_PATHS.get(_PATH[0])
+    if en is None: return ""
+    if big:
+        return f'<a class="lang2" href="{u(slash(en))}" hreflang="en" lang="en">English version</a>'
+    return f'<a class="lang" href="{u(slash(en))}" hreflang="en" lang="en" title="English version" aria-label="English version">EN</a>'
 
 def cita_block():
     phones = "".join(f'<a href="tel:{s["tel_e164"]}"><span>{s["town"]}</span><b>{s["tel"]}</b></a>' for s in STORES)
@@ -159,7 +183,7 @@ def footer():
    <p>Ópticos y audioprotesistas en Albox y Huércal-Overa desde 1980. Centro Varilux especialista desde 2000.</p>
   </div>
   <div><h2>Tiendas</h2><ul>{stores}</ul></div>
-  <div><h2>La web</h2><ul>{nav}<li><a href="{LIVE}blog/">Blog de Carmen</a></li></ul></div>
+  <div><h2>La web</h2><ul>{nav}<li><a href="{LIVE}blog/">Blog de Carmen</a></li><li>{lang_link(True)}</li></ul></div>
   <div><h2>Escríbenos</h2><ul><li><a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></li></ul></div>
   <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/">Aviso legal</a><a href="{LIVE}politica-de-privacidad/">Privacidad</a><a href="{LIVE}politica-de-cookies/">Cookies</a><button type="button" class="cky-banner-element linkbtn">Configurar cookies</button><a class="credit" href="https://geovisibilidad.com/">Web: geovisibilidad</a></p>
  </div>
@@ -173,6 +197,7 @@ def footer():
 def page(path, title, desc, ld, body, cur="", preload=""):
     out = OUT / path / "index.html" if path else OUT / "index.html"
     out.parent.mkdir(parents=True, exist_ok=True)
+    _PATH[0] = path
     out.write_text(head(title, desc, path, ld, preload) + header(cur) + body + footer(), encoding="utf-8")
     print("ok", out.relative_to(OUT))
 
