@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Óptica Almería · diseño nuevo (v5)
-Description: Sirve la portada y las páginas de servicios y tiendas con el diseño nuevo. El blog, las entradas y el escritorio siguen en WordPress. Para volver a la web anterior basta con desactivar este plugin.
-Version: 5.9
+Description: Sirve la portada, las páginas de servicios y tiendas y el blog (entradas y categorías) con el diseño nuevo. Los textos legales y el escritorio siguen en WordPress. Para volver a la web anterior basta con desactivar este plugin.
+Version: 5.10
 Author: Antonio Martínez Rosado
 */
 if (!defined('ABSPATH')) exit;
@@ -224,8 +224,157 @@ add_action('wp_head', function () {
        . '<link rel="alternate" hreflang="x-default" href="' . esc_url($es) . '">' . "\n";
 }, 2);
 
+
+// ---------- Blog en español con el diseño nuevo (desde 5.10) ----------
+// /blog/, las categorías y cada entrada salen con site/_plantilla-es.html. El contenido sigue en WordPress
+// (el blog automático publica igual que antes por REST). Para volver al blog de Divi: quitar este bloque y su ruta.
+function ov5_es_pagina($titulo, $desc, $canon, $en, $body, $ld, $ogtype = 'website', $ogimg = '') {
+    $f = __DIR__ . '/site/_plantilla-es.html';
+    if (!is_file($f)) return false;
+    $alt = ''; $lang = ''; $lang2 = '';
+    if ($en) {
+        $alt = '<link rel="alternate" hreflang="es" href="' . esc_url($canon) . '">' . "\n"
+             . '<link rel="alternate" hreflang="en" href="' . esc_url($en) . '">' . "\n"
+             . '<link rel="alternate" hreflang="x-default" href="' . esc_url($canon) . '">';
+        $lang = '<a class="lang" href="' . esc_url($en) . '" hreflang="en" lang="en" title="English version" aria-label="English version">EN</a>';
+        $lang2 = '<a class="lang2" href="' . esc_url($en) . '" hreflang="en" lang="en">English version</a>';
+    }
+    return strtr(file_get_contents($f), array(
+        '%%TITLE%%' => esc_html($titulo), '%%DESC%%' => esc_attr($desc), '%%CANONICAL%%' => esc_url($canon),
+        '%%ALTERNATES%%' => $alt, '%%OGTYPE%%' => $ogtype, '%%LANG%%' => $lang, '%%LANG2%%' => $lang2,
+        '%%OGIMAGE%%' => esc_url($ogimg ? $ogimg : home_url('/wp-content/uploads/2024/06/optica-almeria.jpg')),
+        '%%LD%%' => wp_json_encode(array('@context' => 'https://schema.org', '@graph' => $ld), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        '%%BODY%%' => $body));
+}
+
+function ov5_miga($items) {
+    $l = array(); $i = 1;
+    foreach ($items as $url => $n) $l[] = array('@type' => 'ListItem', 'position' => $i++, 'name' => $n, 'item' => $url);
+    return array('@type' => 'BreadcrumbList', 'itemListElement' => $l);
+}
+
+function ov5_fecha_es($id) {
+    return date_i18n('j \d\e F \d\e Y', get_post_time('U', false, $id));
+}
+
+// <li> de la lista de entradas (misma pieza que la portada)
+function ov5_es_lista($ids) {
+    $li = '';
+    foreach ($ids as $id) {
+        $li .= '<li><a href="' . esc_url(get_permalink($id)) . '"><time datetime="' . esc_attr(get_the_date('Y-m-d', $id)) . '">'
+             . esc_html(ov5_fecha_es($id)) . '</time><h3>' . esc_html(get_the_title($id)) . '</h3><span class="arrow" aria-hidden="true">→</span></a></li>';
+    }
+    return $li;
+}
+
+function ov5_es_ids($n = 200, $extra = array()) {
+    return get_posts(array_merge(array('post_type' => 'post', 'post_status' => 'publish', 'numberposts' => $n,
+        'fields' => 'ids', 'has_password' => false, 'orderby' => 'date', 'order' => 'DESC'), $extra));
+}
+
+// Título y descripción de Yoast si están; si no, los de la entrada
+function ov5_yoast($id, $titulo, $desc) {
+    if (function_exists('YoastSEO')) {
+        try {
+            $m = YoastSEO()->meta->for_post($id);
+            if ($m && $m->title) $titulo = $m->title;
+            if ($m && $m->description) $desc = $m->description;
+        } catch (\Throwable $e) {}
+    }
+    return array(html_entity_decode($titulo, ENT_QUOTES, 'UTF-8'), html_entity_decode($desc, ENT_QUOTES, 'UTF-8'));
+}
+
+function ov5_es_blog($cat = null) {
+    $home = home_url('/');
+    $org = array('@id' => $home . '#org');
+    if ($cat) {
+        $ids = ov5_es_ids(200, array('cat' => $cat->term_id));
+        $canon = get_term_link($cat);
+        $h1 = $cat->name;
+        $lead = $cat->description ? wp_strip_all_tags($cat->description) : 'Entradas del blog de Óptica Almería en esta categoría.';
+        $crumb = '<a href="' . esc_url($home) . '">Inicio</a> / <a href="' . esc_url($home . 'blog/') . '">Blog</a>';
+        $titulo = $cat->name . ' · Blog | Óptica Almería';
+        $desc = 'Entradas de «' . $cat->name . '» en el blog de Óptica Almería, ópticos en Albox y Huércal-Overa.';
+        $ld = array(ov5_miga(array($home => 'Inicio', $home . 'blog/' => 'Blog', $canon => $cat->name)));
+        $en = '';
+    } else {
+        $ids = ov5_es_ids();
+        $canon = $home . 'blog/';
+        $h1 = 'Adicta a las gafas, el blog de Carmen';
+        $lead = 'Consejos sobre la vista, el oído y las gafas de nuestros ópticos de Albox y Huércal-Overa.';
+        $crumb = '<a href="' . esc_url($home) . '">Inicio</a> / Blog';
+        $titulo = 'Blog de Carmen: vista, oído y gafas | Óptica Almería';
+        $desc = 'Consejos sobre salud visual, lentillas, progresivos, gafas de sol y audición de Óptica Almería, ópticos en Albox y Huércal-Overa.';
+        $ld = array(ov5_miga(array($home => 'Inicio', $canon => 'Blog')),
+                    array('@type' => 'Blog', '@id' => $canon . '#blog', 'url' => $canon, 'name' => 'Adicta a las gafas, el blog de Carmen', 'inLanguage' => 'es', 'publisher' => $org));
+        $en = $home . 'en/blog/';
+    }
+    $body = '<header class="phead"><div class="wrap"><div><p class="crumbs">' . $crumb . '</p>'
+          . '<h1 class="h1">' . esc_html($h1) . '</h1><p class="lead">' . esc_html($lead) . '</p></div></div></header>'
+          . '<section style="padding-top:0"><div class="wrap"><ul class="posts">' . ov5_es_lista($ids) . '</ul></div></section>';
+    return ov5_es_pagina($titulo, $desc, $canon, $en, $body, $ld);
+}
+
+function ov5_es_post($id) {
+    $p = get_post($id);
+    if (!$p || $p->post_type !== 'post' || post_password_required($p)) return false;
+    $home = home_url('/');
+    $org = array('@id' => $home . '#org');
+    $canon = get_permalink($id);
+    $titulo_h1 = get_the_title($id);
+    $GLOBALS['post'] = $p; setup_postdata($p);
+    $html = apply_filters('the_content', $p->post_content);
+    $extracto = has_excerpt($id) ? get_the_excerpt($id) : wp_trim_words(wp_strip_all_tags($html), 28, '…');
+    wp_reset_postdata();
+    list($titulo, $desc) = ov5_yoast($id, $titulo_h1 . ' | Óptica Almería', $extracto);
+    if (strpos($titulo, 'Óptica Almería') === false) $titulo .= ' | Óptica Almería';
+    $e = function_exists('ov5_en_por_id') ? ov5_en_por_id($id) : null;
+    $en = $e ? $home . 'en/' . $e['path'] . '/' : '';
+    $fig = ''; $img = '';
+    if (has_post_thumbnail($id)) {
+        $tid = get_post_thumbnail_id($id);
+        $im = wp_get_attachment_image_src($tid, 'large');
+        if ($im) {
+            $img = $im[0];
+            $alt = get_post_meta($tid, '_wp_attachment_image_alt', true);
+            $fig = '<figure><img src="' . esc_url($im[0]) . '" alt="' . esc_attr($alt) . '" width="' . (int) $im[1] . '" height="' . (int) $im[2] . '" fetchpriority="high"></figure>';
+        }
+    }
+    $fecha = '<time datetime="' . esc_attr(get_the_date('Y-m-d', $id)) . '">' . esc_html(ov5_fecha_es($id)) . '</time>';
+    $lead = $fecha . ' · Blog de Óptica Almería' . ($en ? ' · <a href="' . esc_url($en) . '" hreflang="en" lang="en">English version</a>' : '');
+    $otras = array_slice(array_values(array_diff(ov5_es_ids(4), array($id))), 0, 3);
+    $mas = $otras ? '<section><div class="wrap"><div class="sec-head"><div><h2 class="h2">Más del blog</h2></div></div><ul class="posts">' . ov5_es_lista($otras)
+         . '</ul><p style="margin-top:24px"><a class="tlink" href="' . esc_url($home . 'blog/') . '">Todas las entradas <span class="arrow">→</span></a></p></div></section>' : '';
+    $body = '<header class="phead"><div class="wrap"><div><p class="crumbs"><a href="' . esc_url($home) . '">Inicio</a> / <a href="' . esc_url($home . 'blog/') . '">Blog</a></p>'
+          . '<h1 class="h1">' . esc_html($titulo_h1) . '</h1><p class="lead">' . $lead . '</p></div>' . $fig . '</div></header>'
+          . '<section style="padding-top:clamp(40px,5vw,72px)"><div class="wrap"><div class="prose ov5-art">' . $html . '</div></div></section>' . $mas;
+    $post_ld = array('@type' => 'BlogPosting', '@id' => $canon . '#post', 'url' => $canon, 'headline' => $titulo_h1, 'description' => $desc,
+        'datePublished' => get_the_date('c', $id), 'dateModified' => get_the_modified_date('c', $id), 'inLanguage' => 'es',
+        'author' => $org, 'publisher' => $org, 'isPartOf' => array('@id' => $home . 'blog/#blog'));
+    if ($img) $post_ld['image'] = $img;
+    $ld = array(ov5_miga(array($home => 'Inicio', $home . 'blog/' => 'Blog', $canon => $titulo_h1)), $post_ld);
+    return ov5_es_pagina($titulo, $desc, $canon, $en, $body, $ld, 'article', $img);
+}
+
+// Portada: las últimas entradas salen de WordPress, no de la lista fija del generador
+function ov5_portada_posts($html, $en = false) {
+    if ($en) {
+        $posts = array_filter(ov5_en_entradas(), function ($e) { return $e['type'] === 'post'; });
+        usort($posts, function ($a, $b) { return strcmp($b['date'], $a['date']); });
+        $li = '';
+        foreach (array_slice($posts, 0, 4) as $e) {
+            $li .= '<li><a href="' . esc_url(home_url('/en/' . $e['path'] . '/')) . '"><time datetime="' . esc_attr($e['date']) . '">'
+                 . esc_html(ov5_fecha_en($e['date'])) . '</time><h3>' . esc_html($e['title']) . '</h3><span class="arrow" aria-hidden="true">→</span></a></li>';
+        }
+    } else {
+        $li = ov5_es_lista(ov5_es_ids(4));
+    }
+    if ($li === '') return $html;
+    return preg_replace('#(<ul class="posts rv">).*?(</ul>)#s', '${1}' . str_replace(array('\\', '$'), array('\\\\', '\\$'), $li) . '${2}', $html, 1);
+}
+
 add_action('template_redirect', function () {
-    if (is_admin() || is_preview()) return;
+    if (is_admin() || is_preview() || is_feed() || is_embed() || is_trackback()) return;
     foreach (array('s', 'p', 'page_id', 'preview', 'et_fb', 'customize_changeset_uuid') as $q) {
         if (isset($_GET[$q])) return;
     }
@@ -256,12 +405,21 @@ add_action('template_redirect', function () {
         $f = __DIR__ . '/site/' . $mapa[$ruta];
         if (!is_file($f)) return;
         $html = file_get_contents($f);
+        if ($ruta === '') $html = ov5_portada_posts($html);
+        if ($ruta === 'en') $html = ov5_portada_posts($html, true);
     } elseif (strpos($ruta, 'en/') === 0) {
         $html = ov5_en_render(substr($ruta, 3));
         if ($html === false) return;
+    } elseif ($ruta === 'blog') {
+        $html = ov5_es_blog();
+    } elseif (is_singular('post')) {
+        $html = ov5_es_post(get_queried_object_id());
+    } elseif (is_category()) {
+        $html = ov5_es_blog(get_queried_object());
     } else {
         return;
     }
+    if ($html === false) return;
     // aviso de cookies y analítica: los mismos que ya tiene la web, sacados de WordPress
     ob_start(); wp_head(); $cab = ov5_trozos(ob_get_clean());
     ob_start(); wp_footer(); $pie = ov5_trozos(ob_get_clean());

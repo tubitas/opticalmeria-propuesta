@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "5.9"
+VER = "5.10"
 
 def u(p=""):
     return BASE + p
@@ -579,7 +579,49 @@ def tienda(s):
          f"Óptica Almería en {s['street']}, {s['town']}. Revisión de la vista, progresivos Varilux, lentillas y audífonos. Teléfono {s['tel']}.",
          [ORG, store_ld(s), crumbs_ld([("", "Inicio"), ("contacto/", "Tiendas"), (f"opticas/{s['slug']}/", s["town"])])], body, cur="contacto/")
 
+# ---------- PLANTILLA para el blog en español (la rellena optica-v5.php desde 5.10) ----------
+def plantilla_es():
+    """Cabecera, pie y bloque de cita en español con huecos %%…%%. %%LANG%% / %%LANG2%% = enlace a la versión inglesa o vacío."""
+    global lang_link
+    orig = lang_link
+    lang_link = lambda big=False: "%%LANG2%%" if big else "%%LANG%%"
+    try:
+        _PATH[0] = "blog"
+        robots = '<meta name="robots" content="noindex,nofollow">' if NOINDEX else ""
+        head_t = f'''<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>document.documentElement.className="js"</script>
+<title>%%TITLE%%</title>
+<meta name="description" content="%%DESC%%">
+{robots}
+<link rel="canonical" href="%%CANONICAL%%">
+%%ALTERNATES%%
+<meta property="og:type" content="%%OGTYPE%%">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Óptica Almería">
+<meta property="og:title" content="%%TITLE%%">
+<meta property="og:description" content="%%DESC%%">
+<meta property="og:image" content="%%OGIMAGE%%">
+<meta name="theme-color" content="#f5f0e8">
+<link rel="icon" href="{LIVE}wp-content/uploads/2024/08/cropped-icono.png">
+<link rel="preload" href="{a('fonts/jost.woff2')}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{a('site.css')}?v={VER}">
+<script type="application/ld+json">%%LD%%</script>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+'''
+        html_t = head_t + header("") + "%%BODY%%\n" + cita_block() + footer()
+    finally:
+        lang_link = orig
+    (OUT / "_plantilla-es.html").write_text(html_t, encoding="utf-8")
+    print("ok _plantilla-es.html")
+
 if __name__ == "__main__":
+    plantilla_es()
     home(); salud_visual(); salud_auditiva(); marcas(); nosotros(); contacto()
     for s in STORES: tienda(s)
     (OUT / "robots.txt").write_text("User-agent: *\nDisallow: /\n" if NOINDEX else f"User-agent: *\nAllow: /\nSitemap: {LIVE}sitemap.xml\n")
