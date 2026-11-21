@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "5.11"
+VER = "5.12"
 
 def u(p=""):
     return BASE + p
@@ -41,7 +41,7 @@ STORES = [
          embed="https://www.google.com/maps?q=%C3%93ptica+Almer%C3%ADa,+Avenida+Puente+9,+04800+Albox&output=embed",
          geo=(37.3889, -2.1486)),
     dict(slug="huercal-overa", town="Huércal-Overa", name="Óptica Almería Huércal-Overa", street="Avenida Guillermo Reyna, 50",
-         cp="04600", nica=[("Óptica", "23571")], tel="950 13 41 99", tel_e164="+34950134199", wpimg="wp-content/uploads/2024/08/huercal-overa-1.jpg", img="tienda-huercal", imgw=[532],
+         cp="04600", nica=[("Óptica", "23571"), ("Centro auditivo, calle Monjas", "29774")], tel="950 13 41 99", tel_e164="+34950134199", wpimg="wp-content/uploads/2024/08/huercal-overa-1.jpg", img="tienda-huercal", imgw=[532],
          maps="https://www.google.com/maps/search/?api=1&query=%C3%93ptica+Almer%C3%ADa+Guillermo+Reyna+50+Hu%C3%A9rcal-Overa",
          embed="https://www.google.com/maps?q=%C3%93ptica+Almer%C3%ADa,+Avenida+Guillermo+Reyna+50,+04600+Hu%C3%A9rcal-Overa&output=embed",
          geo=(37.3889, -1.9417)),
@@ -49,7 +49,6 @@ STORES = [
 
 INSTAGRAM = "https://www.instagram.com/opticalmeria/"
 # Números de registro sanitario de Andalucía (NICA), según Carmen por WhatsApp el 21/11/2026
-NICA_MONJAS = "29774"  # «Audio calle monjas»
 
 POSTS = [
     ("senales-perdida-de-audicion", "Señales de que oyes peor de lo que crees", "2026-11-10"),
@@ -529,7 +528,7 @@ def nosotros():
    <p>Es un título que otorga Essilor a las ópticas que dan mejor servicio y atención y trabajan con los últimos avances. Para tenerlo, nuestras tiendas cuentan con los instrumentos de medida más precisos del mercado y con personal muy cualificado.</p>
    <h2 id="sanitario">Somos establecimiento sanitario</h2>
    <p>Nuestro trabajo tiene que ver con tu salud, la visual y la auditiva. Por eso cada revisión la hace un profesional titulado y con el tiempo que haga falta.</p>
-   <p>Estamos inscritos en el registro de centros sanitarios de Andalucía con estos números (NICA): {"; ".join(st["town"] + ", " + ", ".join(f"{k.lower()} {n}" for k, n in st["nica"]) for st in STORES)}; centro auditivo de la calle Monjas, {NICA_MONJAS}.</p>
+   <p>Estamos inscritos en el registro de centros sanitarios de Andalucía con estos números (NICA): Albox, óptica 3973 y audiología 30611; Huércal-Overa, óptica 23571 y centro auditivo de la calle Monjas 29774.</p>
   </div>
  </div>
 </section>

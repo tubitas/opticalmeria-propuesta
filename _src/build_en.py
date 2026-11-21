@@ -440,7 +440,7 @@ def about():
    <p>It’s a title Essilor awards to opticians who give the best service and care and work with the latest advances. To hold it, our shops have the most precise measuring instruments on the market and highly qualified staff.</p>
    <h2 id="sanitario">We are a healthcare establishment</h2>
    <p>Our work is about your health, both your sight and your hearing. That’s why every test is done by a qualified professional, taking all the time it needs.</p>
-   <p>We are listed in the Andalusian register of healthcare centres under these numbers (NICA): Albox, optician 3973 and hearing care 30611; Huércal-Overa, optician 23571; hearing centre on Calle Monjas, {B.NICA_MONJAS}.</p>
+   <p>We are listed in the Andalusian register of healthcare centres under these numbers (NICA): Albox, optician 3973 and hearing care 30611; Huércal-Overa, optician 23571 and hearing centre on Calle Monjas 29774.</p>
   </div>
  </div>
 </section>
@@ -477,7 +477,7 @@ def shop(s):
    <div><dt>Phone</dt><dd><a href="tel:{s["tel_e164"]}">{tel}</a></dd></div>
    <div><dt>Languages</dt><dd>English and Spanish</dd></div>
    <div><dt>Opening hours</dt><dd>Monday to Friday, 9:30am to 2pm and 5:40pm to 8:30pm<br>In summer, afternoons 5pm to 8pm<br>Saturdays, 10am to 2pm</dd></div>
-   <div><dt>Health registration</dt><dd>{"<br>".join(f"{ {'Óptica': 'Optician', 'Audiología': 'Hearing care'}[k]}: NICA {n}" for k, n in s["nica"])}</dd></div>
+   <div><dt>Health registration</dt><dd>{"<br>".join(f"{ {'Óptica': 'Optician', 'Audiología': 'Hearing care', 'Centro auditivo, calle Monjas': 'Hearing centre, Calle Monjas'}[k]}: NICA {n}" for k, n in s["nica"])}</dd></div>
   </dl>
   <div class="ctas" style="margin:32px 0 56px"><a class="btn" href="tel:{s["tel_e164"]}">{PHONE_SVG}Call {s["town"]}</a><a class="btn ghost" href="{s["maps"]}" rel="noopener">{PIN_SVG}Directions</a></div>
   <div class="map" data-src="{s["embed"]}" data-title="Map of Óptica Almería in {s["town"]}"><button type="button" class="map-on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Show the map</span><small>Clicking loads Google Maps, which uses its own cookies.</small></button></div>
