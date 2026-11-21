@@ -213,6 +213,7 @@ dict(wp_id=969, type="page", path="legal-notice", es_url="https://www.opticalmer
 <li>Address: Avda. Puente, 9, 04800 Albox (Almería), Spain</li>
 <li>Email: <a href="mailto:carmen@opticalmeria.com">carmen@opticalmeria.com</a></li>
 <li>Phone: +34950430012 / +34950134199</li>
+<li>Andalusian healthcare centre register (NICA): Albox optician 3973 and hearing care 30611; Huércal-Overa optician 23571; hearing centre on Calle Monjas 29774</li>
 <li>Website: <a href="https://opticalmeria.com/">https://opticalmeria.com/</a></li>
 </ul>
 <h2>Purpose</h2>

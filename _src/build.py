@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = os.environ.get("BASE", "/opticalmeria-propuesta/")
 LIVE = "https://www.opticalmeria.com/"
 NOINDEX = os.environ.get("NOINDEX", "1") == "1"
-VER = "5.10"
+VER = "5.11"
 
 def u(p=""):
     return BASE + p
@@ -36,16 +36,20 @@ def a(p=""):
 
 STORES = [
     dict(slug="albox", town="Albox", name="Óptica Almería Albox", street="Avenida Puente, 9",
-         cp="04800", tel="950 43 00 12", tel_e164="+34950430012", wpimg="", img="monturas-redondas", imgw=[640, 1126], alt="Gafas de sol redondas de acetato de Óptica Almería",
+         cp="04800", nica=[("Óptica", "3973"), ("Audiología", "30611")], tel="950 43 00 12", tel_e164="+34950430012", wpimg="", img="monturas-redondas", imgw=[640, 1126], alt="Gafas de sol redondas de acetato de Óptica Almería",
          maps="https://www.google.com/maps/search/?api=1&query=%C3%93ptica+Almer%C3%ADa+Avenida+Puente+9+Albox",
          embed="https://www.google.com/maps?q=%C3%93ptica+Almer%C3%ADa,+Avenida+Puente+9,+04800+Albox&output=embed",
          geo=(37.3889, -2.1486)),
-    dict(slug="huercal-overa", town="Huércal-Overa", name="Óptica Almería Huércal-Overa", street="Avenida Guillermo Reyna, 16",
-         cp="04600", tel="950 13 41 99", tel_e164="+34950134199", wpimg="wp-content/uploads/2024/08/huercal-overa-1.jpg", img="tienda-huercal", imgw=[532],
-         maps="https://www.google.com/maps/search/?api=1&query=%C3%93ptica+Almer%C3%ADa+Guillermo+Reyna+16+Hu%C3%A9rcal-Overa",
-         embed="https://www.google.com/maps?q=%C3%93ptica+Almer%C3%ADa,+Avenida+Guillermo+Reyna+16,+04600+Hu%C3%A9rcal-Overa&output=embed",
+    dict(slug="huercal-overa", town="Huércal-Overa", name="Óptica Almería Huércal-Overa", street="Avenida Guillermo Reyna, 50",
+         cp="04600", nica=[("Óptica", "23571")], tel="950 13 41 99", tel_e164="+34950134199", wpimg="wp-content/uploads/2024/08/huercal-overa-1.jpg", img="tienda-huercal", imgw=[532],
+         maps="https://www.google.com/maps/search/?api=1&query=%C3%93ptica+Almer%C3%ADa+Guillermo+Reyna+50+Hu%C3%A9rcal-Overa",
+         embed="https://www.google.com/maps?q=%C3%93ptica+Almer%C3%ADa,+Avenida+Guillermo+Reyna+50,+04600+Hu%C3%A9rcal-Overa&output=embed",
          geo=(37.3889, -1.9417)),
 ]
+
+INSTAGRAM = "https://www.instagram.com/opticalmeria/"
+# Números de registro sanitario de Andalucía (NICA), según Carmen por WhatsApp el 21/11/2026
+NICA_MONJAS = "29774"  # «Audio calle monjas»
 
 POSTS = [
     ("senales-perdida-de-audicion", "Señales de que oyes peor de lo que crees", "2026-11-10"),
@@ -86,7 +90,8 @@ def pic(name, widths, alt, sizes="100vw", cls="", eager=False, w=None, h=None):
 ORG = {"@type": "Organization", "@id": LIVE + "#org", "name": "Óptica Almería", "url": LIVE,
        "logo": LIVE + "wp-content/uploads/2024/08/cropped-icono.png", "email": "info@opticalmeria.com",
        "foundingDate": "1980", "knowsLanguage": ["es", "en"], "award": "Centro Varilux especialista desde 2000",
-       "department": [{"@id": LIVE + f"opticas/{s['slug']}/#tienda"} for s in STORES]}
+       "department": [{"@id": LIVE + f"opticas/{s['slug']}/#tienda"} for s in STORES],
+       "sameAs": [INSTAGRAM]}
 def store_ld(s):
     return {"@type": "Optician", "@id": LIVE + f"opticas/{s['slug']}/#tienda", "name": s["name"],
             "url": LIVE + f"opticas/{s['slug']}/", "telephone": s["tel_e164"], **({"image": LIVE + s["wpimg"]} if s["wpimg"] else {}),
@@ -184,7 +189,7 @@ def footer():
   </div>
   <div><h2>Tiendas</h2><ul>{stores}</ul></div>
   <div><h2>La web</h2><ul>{nav}<li><a href="{LIVE}blog/">Blog de Carmen</a></li><li>{lang_link(True)}</li></ul></div>
-  <div><h2>Escríbenos</h2><ul><li><a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></li></ul></div>
+  <div><h2>Escríbenos</h2><ul><li><a href="mailto:info@opticalmeria.com">info@opticalmeria.com</a></li><li><a href="{INSTAGRAM}" rel="noopener">Instagram @opticalmeria</a></li></ul></div>
   <p class="legal"><span>© Óptica Almería · Óptica Berruezo, S. L.</span><a href="{LIVE}aviso-legal/">Aviso legal</a><a href="{LIVE}politica-de-privacidad/">Privacidad</a><a href="{LIVE}politica-de-cookies/">Cookies</a><button type="button" class="cky-banner-element linkbtn">Configurar cookies</button><a class="credit" href="https://geovisibilidad.com/">Web: geovisibilidad</a></p>
  </div>
 </footer>
@@ -524,6 +529,7 @@ def nosotros():
    <p>Es un título que otorga Essilor a las ópticas que dan mejor servicio y atención y trabajan con los últimos avances. Para tenerlo, nuestras tiendas cuentan con los instrumentos de medida más precisos del mercado y con personal muy cualificado.</p>
    <h2 id="sanitario">Somos establecimiento sanitario</h2>
    <p>Nuestro trabajo tiene que ver con tu salud, la visual y la auditiva. Por eso cada revisión la hace un profesional titulado y con el tiempo que haga falta.</p>
+   <p>Estamos inscritos en el registro de centros sanitarios de Andalucía con estos números (NICA): {"; ".join(st["town"] + ", " + ", ".join(f"{k.lower()} {n}" for k, n in st["nica"]) for st in STORES)}; centro auditivo de la calle Monjas, {NICA_MONJAS}.</p>
   </div>
  </div>
 </section>
@@ -543,7 +549,7 @@ def contacto():
 </section>
 {cita_block()}'''
     page("contacto", "Tiendas y contacto en Albox y Huércal-Overa | Óptica Almería",
-         "Óptica Almería en Avenida Puente 9 de Albox (950 43 00 12) y Avenida Guillermo Reyna 16 de Huércal-Overa (950 13 41 99). Cómo llegar y pedir cita.",
+         "Óptica Almería en Avenida Puente 9 de Albox (950 43 00 12) y Avenida Guillermo Reyna 50 de Huércal-Overa (950 13 41 99). Cómo llegar y pedir cita.",
          [ORG] + [store_ld(s) for s in STORES] + [crumbs_ld([("", "Inicio"), ("contacto/", "Tiendas")])], body, cur="contacto/")
 
 # ---------- UNA PÁGINA POR TIENDA ----------
@@ -558,6 +564,7 @@ def tienda(s):
    <div><dt>Dirección</dt><dd>{s["street"]}<br>{s["cp"]} {s["town"]} (Almería)</dd></div>
    <div><dt>Teléfono</dt><dd><a href="tel:{s["tel_e164"]}">{s["tel"]}</a></dd></div>
    <div><dt>Horario</dt><dd>Lunes a viernes, de 9:30 a 14:00 y de 17:40 a 20:30<br>En verano, por la tarde, de 17:00 a 20:00<br>Sábados, de 10:00 a 14:00</dd></div>
+   <div><dt>Registro sanitario</dt><dd>{"<br>".join(f"{k}: NICA {n}" for k, n in s["nica"])}</dd></div>
   </dl>
   <div class="ctas" style="margin:32px 0 56px"><a class="btn" href="tel:{s["tel_e164"]}">{PHONE_SVG}Llamar a {s["town"]}</a><a class="btn ghost" href="{s["maps"]}" rel="noopener">{PIN_SVG}Cómo llegar</a></div>
   <div class="map" data-src="{s["embed"]}" data-title="Mapa de Óptica Almería en {s["town"]}"><button type="button" class="map-on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Ver el mapa</span><small>Al pulsar se carga Google Maps, que usa sus propias cookies.</small></button></div>
